@@ -1,0 +1,84 @@
+.header {
+  background: #6c63ff;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.header p {
+  margin: 0.5rem 0 0;
+  font-size: 1.2rem;
+}
+
+main {
+  padding: 2rem;
+}
+
+.levels, .donation, .penalty {
+  background: white;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.levels h2, .donation h2, .penalty h2 {
+  color: #6c63ff;
+  margin-bottom: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  margin: 0.5rem;
+  border-radius: 20px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+}
+
+.badge.silver {
+  background: #c0c0c0;
+}
+
+.badge.gold {
+  background: #ffd700;
+}
+
+.badge.premium {
+  background: #b8860b;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+form input, form select, form button {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+form button {
+  background: #6c63ff;
+  color: white;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+form button:hover {
+  background: #5548c8;
+}

@@ -1,0 +1,53 @@
+<!-- Main Content -->
+<header class="header">
+  <h1>Welcome to the Decentralized Donation Platform</h1>
+  <p>Bringing Transparency and Trust to Blockchain Donations</p>
+</header>
+
+<main>
+  <!-- Organization and Donor Levels -->
+  <section class="levels">
+    <h2>Donor and Organization Levels</h2>
+    <p>Our platform ensures a fair donation system with levels:</p>
+    <div class="badge silver">Silver</div>
+    <div class="badge gold">Gold</div>
+    <div class="badge premium">Premium</div>
+  </section>
+
+  <!-- Two-Phase Donation -->
+  <section class="donation">
+    <h2>How Donations Work</h2>
+    <p>Follow our transparent two-phase donation system:</p>
+    <ol>
+      <li>Commit: Lock your donation with a cryptographic hash.</li>
+      <li>Reveal: Disclose your donation to complete the process.</li>
+    </ol>
+    <form id="donationForm">
+      <label for="donorLevel">Your Level:</label>
+      <select id="donorLevel" required>
+        <option value="silver">Silver</option>
+        <option value="gold">Gold</option>
+        <option value="premium">Premium</option>
+      </select>
+
+      <label for="orgLevel">Organization Level:</label>
+      <select id="orgLevel" required>
+        <option value="silver">Silver</option>
+        <option value="gold">Gold</option>
+        <option value="premium">Premium</option>
+      </select>
+
+      <label for="donationAmount">Donation Amount:</label>
+      <input id="donationAmount" placeholder="Enter amount" required type="number">
+
+      <button id="commitBtn" type="button">Commit Donation</button>
+      <button id="revealBtn" type="button">Reveal Donation</button>
+    </form>
+  </section>
+
+  <!-- Penalty System -->
+  <section class="penalty">
+    <h2>Penalty System</h2>
+    <p>To maintain integrity, unrevealed donations result in level penalties and restricted access.</p>
+  </section>
+</main>

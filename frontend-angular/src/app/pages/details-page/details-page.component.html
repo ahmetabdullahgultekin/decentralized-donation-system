@@ -1,0 +1,47 @@
+<div class="container">
+  <header class="header">
+    <h1>DonateChain</h1>
+    <nav class="nav">
+      <button (click)="connectWallet()" class="button">Connect Wallet</button>
+      <div class="badge badge-gold">
+        Your Level: Gold
+      </div>
+    </nav>
+  </header>
+
+  <div class="phase-indicator">
+    <div [class.active]="currentPhase === 1" class="phase-dot"></div>
+    <span>Phase 1: Commit</span>
+    <div [class.active]="currentPhase === 2" class="phase-dot"></div>
+    <span>Phase 2: Reveal</span>
+  </div>
+
+  <main class="main">
+    <!-- Organizations Section -->
+    <section class="card">
+      <h2>Available Organizations</h2>
+      <div id="orgs-list">
+        <div *ngFor="let org of organizations" class="org-item">
+          <h3>{{ org.name }}</h3>
+          <div [class]="'badge badge-' + org.level.toLowerCase()">
+            {{ org.level }} Organization
+          </div>
+          <p>Reputation Score: {{ org.reputation }}</p>
+          <button (click)="commitDonation(org.address)" class="button">Commit Donation</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Donations Section -->
+    <aside class="card">
+      <h2>Your Donations</h2>
+      <div id="donations-list">
+        <div *ngFor="let donation of userDonations" class="donation-item">
+          <p>Committed to: {{ donation.orgName }}</p>
+          <p>Status: {{ donation.status }}</p>
+          <p *ngIf="donation.timeRemaining">Time Remaining: {{ donation.timeRemaining }}</p>
+        </div>
+      </div>
+    </aside>
+  </main>
+</div>
