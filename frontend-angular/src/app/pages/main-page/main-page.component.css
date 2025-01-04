@@ -2,7 +2,7 @@
 .hero {
   position: relative;
   height: 100vh;
-  background-image: url("/background.webp"); /* Replace with your premium image */
+  background-image: url("/images/background.webp"); /* Replace with your premium image */
   background-size: cover;
   background-position: center;
   display: flex;

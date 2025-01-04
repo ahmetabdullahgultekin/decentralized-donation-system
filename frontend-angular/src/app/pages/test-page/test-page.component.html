@@ -1,0 +1,19 @@
+<div class="container">
+  <h1>Storage Smart Contract</h1>
+
+  <!-- Connected Account -->
+  <p><strong>Connected Account:</strong> {{ userAccountObj?.address || 'Not Connected' }}</p>
+
+  <!-- Retrieve Stored Value -->
+  <div>
+    <button (click)="getStoredValue()" class="button">Retrieve Stored Value</button>
+    <p><strong>Stored Value:</strong> {{ storedValue !== null ? storedValue : 'No value retrieved' }}</p>
+  </div>
+
+  <!-- Store New Value -->
+  <div>
+    <label for="storeValueInput">Enter a new value to store:</label>
+    <input #input id="storeValueInput" type="number"/>
+    <button (click)="storeValue(input.value)" class="button">Store Value</button>
+  </div>
+</div>

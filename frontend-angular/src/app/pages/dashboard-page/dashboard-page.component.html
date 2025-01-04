@@ -1,0 +1,52 @@
+<div class="container">
+  <header class="header">
+    <h1>Welcome, <span>{{ userProfileObj.name }}</span></h1>
+    <p>Your personal dashboard to manage donations, badges, and activities.</p>
+  </header>
+
+  <main>
+    <!-- Profile Section -->
+    <section class="card profile">
+      <h2>Your Profile</h2>
+      <div class="details">
+        <p><strong>Name:</strong> {{ userProfileObj.name }}</p>
+        <p><strong>Email:</strong> {{ userProfileObj.address }}</p>
+        <p><strong>Reputation:</strong> {{ userProfileObj.reputation }}</p>
+      </div>
+    </section>
+
+    <!-- MetaMask Account Details -->
+    <section class="card metamask">
+      <h2>MetaMask Account Details</h2>
+      <div *ngIf="userAccountObj.address.length !== 0; else noAccount">
+        <p><strong>Connected Account:</strong> {{ userAccountObj.address }}</p>
+        <p><strong>Balance:</strong> {{ userAccountObj.balance }} ETH</p>
+        <p><strong>Network ID:</strong> {{ userAccountObj.networkId }}</p>
+      </div>
+      <ng-template #noAccount>
+        <p>No account connected. Please connect your MetaMask wallet.</p>
+        <button (click)="connectWallet()" class="button">Connect Wallet</button>
+      </ng-template>
+    </section>
+
+    <!-- Badges Section -->
+    <section class="card">
+      <h2>Your Badges</h2>
+      <div class="badge-list">
+        <div *ngFor="let badge of userProfileObj?.badges" [ngClass]="badge.type.toLowerCase()" class="badge-item">
+          <p>{{ badge.type }} Badge</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Activity History Section -->
+    <section class="card">
+      <h2>Activity History</h2>
+      <div class="activity-list">
+        <div *ngFor="let activity of userProfileObj?.activityHistory" class="activity-item">
+          <p><strong>{{ activity.date }}</strong> - {{ activity.description }}</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>

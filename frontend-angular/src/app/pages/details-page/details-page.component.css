@@ -11,28 +11,28 @@
 
 .container::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   opacity: 0.2;
   z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Cg fill='%234a5568' fill-opacity='0.3'%3E%3Cpath d='M100 25c-41.4 0-75 33.6-75 75s33.6 75 75 75 75-33.6 75-75-33.6-75-75-75zm0 137.5c-34.5 0-62.5-28-62.5-62.5S65.5 37.5 100 37.5s62.5 28 62.5 62.5-28 62.5-62.5 62.5z'/%3E%3Cpath d='M100 75c-13.8 0-25 11.2-25 25s11.2 25 25 25 25-11.2 25-25-11.2-25-25-25zm0 37.5c-6.9 0-12.5-5.6-12.5-12.5S93.1 87.5 100 87.5s12.5 5.6 12.5 12.5-5.6 12.5-12.5 12.5z'/%3E%3Cpath d='M150 50L125 25M50 150L25 125M150 150l25-25M50 50L25 25'/%3E%3Cpath d='M100 0v25M100 175v25M200 100h-25M25 100H0'/%3E%3C/g%3E%3C/svg%3E");
-  animation: floatBackground 60s linear infinite;
+  background-image: url("/images/shape1.svg");
+  animation: floatBackground 6s linear infinite;
 }
 
 .container::after {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   opacity: 0.2;
   z-index: -1;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150' viewBox='0 0 150 150'%3E%3Cpath fill='%23ed8936' d='M75 45c-7.5-15-30-22.5-45-7.5S15 75 22.5 90L75 135l52.5-45c7.5-15 15-37.5 0-52.5S82.5 30 75 45z'/%3E%3C/svg%3E");
-  animation: floatBackgroundReverse 45s linear infinite;
+  background-image: url("/images/shape2.svg");
+  animation: floatBackgroundReverse 5s linear infinite;
 }
 
 @keyframes floatBackground {
@@ -46,7 +46,7 @@
 
 @keyframes floatBackgroundReverse {
   from {
-    background-position: 200px 200px;
+    background-position: 150px 150px;
   }
   to {
     background-position: 0 0;

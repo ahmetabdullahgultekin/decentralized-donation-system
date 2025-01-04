@@ -1,12 +1,24 @@
-<!-- Navigation Bar -->
 <nav class="navbar">
   <div class="logo">
-    <a routerLink="/" routerLinkActive="active">Decentralized Donation</a>
+    <a routerLink="/">DonateChain</a>
   </div>
   <ul class="nav-links">
-    <li><a routerLink="/" routerLinkActive="active">Home</a></li>
-    <li><a routerLink="/donate" routerLinkActive="active">Donate</a></li>
-    <li><a routerLink="/details" routerLinkActive="active">Details</a></li>
-    <li><a routerLink="/about" routerLinkActive="active">About Us</a></li>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/about">About</a></li>
+    <li><a routerLink="/donate">Donate</a></li>
+    <li><a routerLink="/details">Details</a></li>
+    <li><a routerLink="/test">Test</a></li>
   </ul>
+  <div class="user-actions">
+    <div class="profile-dropdown">
+      <button (click)="toggleDropdown()" class="button">
+        <img alt="Avatar" class="avatar-small" height="1024" ngSrc="/images/avatar1.webp" width="1024"/>
+        {{ userName }}
+      </button>
+      <div (click)="closeDropdown()" *ngIf="dropdownVisible" class="dropdown-menu">
+        <a class="dropdown-item" routerLink="/dashboard">Profile</a>
+        <a (click)="logout()" class="dropdown-item">Logout</a>
+      </div>
+    </div>
+  </div>
 </nav>
