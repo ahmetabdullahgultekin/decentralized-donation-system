@@ -16,7 +16,7 @@ export class TestPageComponent implements OnInit {
 
   // Replace with your contract's ABI and address
   contractAbi: any = abi;
-  contractAddress: string = '0xd9145CCE52D386f254917e481eB44e9943F39138';
+  contractAddress: string = '0x9bfED0e49930843E039126b0BC62A5461a135bE8';
 
   userAccountObj: Account | null = null;
 
@@ -27,14 +27,18 @@ export class TestPageComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.loadingService.show();
+    await this.initializeTestPage();
+  }
 
+  // Initialize the Test Page
+  async initializeTestPage() {
     try {
       // Connect MetaMask
       this.userAccountObj = await this.metaMaskService.connectMetaMask();
 
       // Initialize the contract if the wallet is connected
       if (this.userAccountObj) {
+        console.log('Contract ABI:', this.contractAbi);
         this.contract = this.metaMaskService.initializeContract(
           this.contractAbi,
           this.contractAddress
@@ -45,8 +49,6 @@ export class TestPageComponent implements OnInit {
       }
     } catch (error) {
       console.error('Error initializing TestPage:', error);
-    } finally {
-      this.loadingService.hide();
     }
   }
 
@@ -54,7 +56,17 @@ export class TestPageComponent implements OnInit {
   async getStoredValue() {
     this.loadingService.show();
     try {
-      const value = await this.contract.methods.retrieve().call();
+      if (!this.contract) {
+        alert('Contract not initialized. Please connect your MetaMask wallet first.');
+        return;
+      }
+      if (!this.userAccountObj) {
+        alert('Please connect your MetaMask wallet first.');
+        return;
+      }
+      const value = await this.contract.methods.retrieve().call(
+        {from: this.userAccountObj.address}
+      );
       console.log('Retrieved Value:', value);
       this.storedValue = value;
     } catch (error) {
@@ -74,9 +86,15 @@ export class TestPageComponent implements OnInit {
         return;
       }
 
+      if (!this.contract) {
+        alert('Contract not initialized. Please connect your MetaMask wallet first.');
+        return;
+      }
+
       // Call the store function
       const result = await this.contract.methods.store(newValue).send({
         from: this.userAccountObj.address,
+        to: this.contractAddress,
       });
 
       console.log('Transaction Result:', result);
