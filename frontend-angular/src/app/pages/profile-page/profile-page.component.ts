@@ -1,18 +1,18 @@
 import {Component, OnInit} from '@angular/core';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
 import {LoadingService} from '../../services/loading.service';
-import {MetaMaskService} from '../../services/metamask.service';
+import {Web3Service} from '../../services/web3.service';
 import {AuthService} from '../../services/auth.service';
 import {Account} from '../../interfaces/account';
 import {Profile} from '../../interfaces/profile';
 
 @Component({
-  selector: 'app-dashboard-page',
+  selector: 'app-profile-page',
   imports: [NgForOf, NgClass, NgIf],
-  templateUrl: './dashboard-page.component.html',
-  styleUrl: './dashboard-page.component.css',
+  templateUrl: './profile-page.component.html',
+  styleUrl: './profile-page.component.css',
 })
-export class DashboardPageComponent implements OnInit {
+export class ProfilePageComponent implements OnInit {
   userProfileObj: Profile = {
     name: '',
     level: '',
@@ -29,7 +29,7 @@ export class DashboardPageComponent implements OnInit {
   }
 
   constructor(
-    private metaMaskService: MetaMaskService,
+    private metaMaskService: Web3Service,
     private authService: AuthService,
     private loadingService: LoadingService
   ) {

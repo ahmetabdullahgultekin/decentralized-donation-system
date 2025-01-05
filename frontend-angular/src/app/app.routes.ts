@@ -1,8 +1,10 @@
 import {Routes} from '@angular/router';
-import {MainPageComponent} from './pages/main-page/main-page.component';
 
 export const routes: Routes = [
-  {path: '', component: MainPageComponent},
+  {
+    path: '',
+    loadComponent: () => import('./pages/main-page/main-page.component').then(m => m.MainPageComponent)
+  },
   {
     path: 'donate',
     loadComponent: () => import('./pages/donate-page/donate-page.component').then(m => m.DonatePageComponent)
@@ -16,12 +18,16 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/about-page/about-page.component').then(m => m.AboutPageComponent)
   },
   {
-    path: 'dashboard',
-    loadComponent: () => import('./pages/dashboard-page/dashboard-page.component').then(m => m.DashboardPageComponent)
-  },
-  {
     path: 'test',
     loadComponent: () => import('./pages/test-page/test-page.component').then(m => m.TestPageComponent)
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./pages/profile-page/profile-page.component').then(m => m.ProfilePageComponent)
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./pages/admin-page/admin-page.component').then(m => m.AdminPageComponent)
   },
   {
     path: '**',

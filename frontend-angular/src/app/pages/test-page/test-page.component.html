@@ -2,7 +2,7 @@
   <h1>Storage Smart Contract</h1>
 
   <!-- Connected Account -->
-  <p><strong>Connected Account:</strong> {{ userAccountObj?.address || 'Not Connected' }}</p>
+  <p><strong>Connected Account:</strong> {{ this.account?.address || 'Not Connected' }}</p>
 
   <!-- Retrieve Stored Value -->
   <div>
@@ -13,7 +13,9 @@
   <!-- Store New Value -->
   <div>
     <label for="storeValueInput">Enter a new value to store:</label>
-    <input #input id="storeValueInput" type="number"/>
-    <button (click)="storeValue(input.value)" class="button">Store Value</button>
+    <input #inputValue id="storeValueInput" type="number"/>
+    <label for="inputAddress">Enter deployed contract address:</label>
+    <input #inputAddress id="inputAddress" type="text"/>
+    <button (click)="storeValue(inputValue.value, inputAddress.value)" class="button">Store Value</button>
   </div>
 </div>

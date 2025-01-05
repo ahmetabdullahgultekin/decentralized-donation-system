@@ -13,6 +13,7 @@ import {FooterComponent} from './shared/footer/footer.component';
 import {LoadingSpinnerComponent} from './shared/loading-spinner/loading-spinner.component';
 import {LoadingService} from './services/loading.service';
 import {filter} from 'rxjs';
+import {Web3Service} from './services/web3.service';
 
 @Component({
   selector: 'app-root',
@@ -23,12 +24,17 @@ import {filter} from 'rxjs';
 export class AppComponent {
   title = 'frontend-angular';
 
-  constructor(public router: Router, private loadingService: LoadingService) {
+  constructor(
+    public router: Router,
+    private loadingService: LoadingService,
+    private web3Service: Web3Service
+  ) {
     router.events.pipe(
       filter(e => e instanceof RouterEvent)
     ).subscribe((e: RouterEvent) => {
       this.checkRouterEvent(e);
     });
+    this.web3Service.initializeService();
   }
 
   checkRouterEvent(e: RouterEvent) {

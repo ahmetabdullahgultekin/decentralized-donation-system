@@ -1,4 +1,5 @@
-export const abi = [
+export const donationContractAddress = '0x9bfED0e49930843E039126b0BC62A5461a135bE8';
+export const donationContractAbi = [
   {
     "inputs": [],
     "name": "retrieve",

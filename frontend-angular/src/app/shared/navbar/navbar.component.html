@@ -16,7 +16,8 @@
         {{ userName }}
       </button>
       <div (click)="closeDropdown()" *ngIf="dropdownVisible" class="dropdown-menu">
-        <a class="dropdown-item" routerLink="/dashboard">Profile</a>
+        <a class="dropdown-item" routerLink="/profile">Profile</a>
+        <a class="dropdown-item" routerLink="/admin">Admin</a>
         <a (click)="logout()" class="dropdown-item">Logout</a>
       </div>
     </div>

@@ -1,0 +1,40 @@
+<div class="container">
+  <h1>Admin Dashboard</h1>
+  <p>Manage the donation smart contract address and ABI.</p>
+
+  <!-- Contract Address Section -->
+  <div class="form-group">
+    <label for="contractAddress">Contract Address:</label>
+    <input
+      [(ngModel)]="updatedAddress"
+      class="form-control"
+      id="contractAddress"
+      placeholder="Enter contract address"
+      type="text"
+    />
+  </div>
+
+  <!-- Contract ABI Section -->
+  <div class="form-group">
+    <label for="contractAbi">Contract ABI:</label>
+    <textarea
+      [(ngModel)]="updatedAbi"
+      class="form-control"
+      id="contractAbi"
+      placeholder="Enter contract ABI (JSON format)"
+      rows="10"
+    ></textarea>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="form-actions">
+    <button (click)="saveContractDetails()" class="button save">Save</button>
+  </div>
+
+  <!-- Display Current Contract Details -->
+  <div class="details">
+    <h3>Current Contract Details</h3>
+    <p><strong>Address:</strong> {{ contractAddress }}</p>
+    <pre><strong>ABI:</strong> {{ contractAbi }}</pre>
+  </div>
+</div>
