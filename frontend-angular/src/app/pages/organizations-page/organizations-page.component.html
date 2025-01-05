@@ -4,10 +4,10 @@
 
   <!-- Reload Button -->
   <div *ngIf="errorMessage || loading" class="actions">
-    <button class="button reload" (click)="loadOrganizations()" [disabled]="loading">
+    <button (click)="loadOrganizations()" [disabled]="loading" class="button reload">
       {{ loading ? 'Loading...' : 'Reload' }}
     </button>
-    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
   </div>
 
   <!-- Organizations List -->
@@ -17,7 +17,7 @@
       <p><strong>Wallet Address:</strong> {{ org.wallet }}</p>
       <p><strong>Reputation:</strong> {{ org.reputation }}</p>
       <p><strong>Level:</strong> {{ org.level }}</p>
-      <button class="button donate" [disabled]="true">Donate</button>
+      <button [disabled]="true" class="button donate">Donate</button>
     </div>
   </div>
 

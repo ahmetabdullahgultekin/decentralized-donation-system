@@ -39,9 +39,6 @@ export class Web3Service {
         alert('Invalid Donation Contract Address.');
       }
       this.contract = new this.web3.eth.Contract(this.contractAbi, this.contractAddress);
-      if (this.contract) {
-        console.log('Contract initialized:', this.contract);
-      }
       return this.contract;
     } catch (e) {
       alert('Web3 service could not initialized! ' + e);

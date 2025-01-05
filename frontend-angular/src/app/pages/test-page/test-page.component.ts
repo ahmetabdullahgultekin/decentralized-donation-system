@@ -68,7 +68,7 @@ export class TestPageComponent implements OnInit {
       );
       console.log('Retrieved Value:', value);
       this.storedValue = value;
-    } catch (error : any) {
+    } catch (error: any) {
       alert('Error retrieving value: ' + error.message);
       console.error('Error retrieving value:', error);
     } finally {

@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {Web3Service} from '../../services/web3.service';
-import Web3 from 'web3';
 import {Account} from '../../interfaces/account';
 
 @Component({
@@ -16,17 +15,16 @@ import {Account} from '../../interfaces/account';
 export class OrganizationsPageComponent implements OnInit {
   organizations: any[] = []; // Array to store organization details
   web3: any;
-  contract: any;
   userAccount: Account | null = null;
   errorMessage: string | null = null;
   loading: boolean = false;
 
-  constructor(private web3Service: Web3Service) {}
+  constructor(private web3Service: Web3Service) {
+  }
 
   async ngOnInit() {
     try {
       this.userAccount = this.web3Service.getConnectedAccount();
-      this.contract = this.web3Service.getContract();
 
       if (this.userAccount) {
         // Fetch organizations
@@ -53,11 +51,11 @@ export class OrganizationsPageComponent implements OnInit {
           {from: this.web3Service.getContractAddress()},
         );
         organizationList.push({
-          id: organization[0],
-          name: organization[1],
-          wallet: organization[2],
-          reputation: organization[3],
-          level: this.getLevelName(organization[4]),
+          id: organization.id,
+          name: organization.name,
+          wallet: organization.wallet,
+          reputation: organization.reputation,
+          level: this.getLevelName(organization.level),
         });
       }
 
@@ -71,13 +69,17 @@ export class OrganizationsPageComponent implements OnInit {
   }
 
   getLevelName(level: number): string {
-    switch (level) {
-      case 0:
+    switch (Number(level)) {
+      case Number(0):
+        return 'Bronze';
+      case Number(1):
         return 'Silver';
-      case 1:
+      case Number(2):
         return 'Gold';
-      case 2:
-        return 'Premium';
+      case Number(3):
+        return 'Platinum';
+      case Number(4):
+        return 'Diamond';
       default:
         return 'Unknown';
     }
