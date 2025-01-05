@@ -1,0 +1,28 @@
+<div class="container">
+  <h1>Organizations</h1>
+  <p>Below is a list of organizations you can donate to.</p>
+
+  <!-- Reload Button -->
+  <div *ngIf="errorMessage || loading" class="actions">
+    <button class="button reload" (click)="loadOrganizations()" [disabled]="loading">
+      {{ loading ? 'Loading...' : 'Reload' }}
+    </button>
+    <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+  </div>
+
+  <!-- Organizations List -->
+  <div *ngIf="!loading && organizations.length > 0" class="organizations-list">
+    <div *ngFor="let org of organizations" class="organization-card">
+      <h2>{{ org.name }}</h2>
+      <p><strong>Wallet Address:</strong> {{ org.wallet }}</p>
+      <p><strong>Reputation:</strong> {{ org.reputation }}</p>
+      <p><strong>Level:</strong> {{ org.level }}</p>
+      <button class="button donate" [disabled]="true">Donate</button>
+    </div>
+  </div>
+
+  <!-- No Organizations Message -->
+  <p *ngIf="!loading && organizations.length === 0 && !errorMessage">
+    No organizations found. Please check back later.
+  </p>
+</div>

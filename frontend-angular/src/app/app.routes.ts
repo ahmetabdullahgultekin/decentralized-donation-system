@@ -1,9 +1,11 @@
 import {Routes} from '@angular/router';
+import {MainPageComponent} from './pages/main-page/main-page.component';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./pages/main-page/main-page.component').then(m => m.MainPageComponent)
+    component: MainPageComponent
+    //loadComponent: () => import('./pages/main-page/main-page.component').then(m => m.MainPageComponent)
   },
   {
     path: 'donate',
@@ -20,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'test',
     loadComponent: () => import('./pages/test-page/test-page.component').then(m => m.TestPageComponent)
+  },
+  {
+    path: 'organizations',
+    loadComponent: () => import('./pages/organizations-page/organizations-page.component').then(m => m.OrganizationsPageComponent)
   },
   {
     path: 'profile',
