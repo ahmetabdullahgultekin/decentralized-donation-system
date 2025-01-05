@@ -1,0 +1,15 @@
+<div class="container">
+  <h1>Sign In</h1>
+  <p>Sign in using your wallet.</p>
+
+  <div *ngIf="donor; else notRegistered">
+    <h2>Welcome, {{ donor.name }}</h2>
+    <p><strong>Wallet:</strong> {{ donor.wallet }}</p>
+    <p><strong>Level:</strong> {{ donor.level }}</p>
+    <p><strong>Reputation:</strong> {{ donor.reputation }}</p>
+  </div>
+
+  <ng-template #notRegistered>
+    <p class="error">{{ errorMessage }}</p>
+  </ng-template>
+</div>

@@ -13,7 +13,9 @@ import {Profile} from '../../interfaces/profile';
   styleUrl: './profile-page.component.css',
 })
 export class ProfilePageComponent implements OnInit {
+
   userProfileObj: Profile = {
+    id: 0,
     name: '',
     level: '',
     reputation: 0,
@@ -54,7 +56,7 @@ export class ProfilePageComponent implements OnInit {
 
   private initialize() {
     // Update all variables
-    this.userProfileObj = this.authService.getUser();
+    //this.userProfileObj = this.authService.getUser();
     this.userAccountObj = this.metaMaskService.getConnectedAccount() || this.userAccountObj;
 
     // Monitor account or network changes

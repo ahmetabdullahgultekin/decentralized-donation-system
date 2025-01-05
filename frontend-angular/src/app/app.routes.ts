@@ -29,11 +29,21 @@ export const routes: Routes = [
   },
   {
     path: 'profile',
-    loadComponent: () => import('./pages/profile-page/profile-page.component').then(m => m.ProfilePageComponent)
+    loadComponent: () => import('./pages/profile-page/profile-page.component').then(m => m.ProfilePageComponent),
+    //canActivate: [AuthGuard]
   },
   {
     path: 'admin',
-    loadComponent: () => import('./pages/admin-page/admin-page.component').then(m => m.AdminPageComponent)
+    loadComponent: () => import('./pages/admin-page/admin-page.component').then(m => m.AdminPageComponent),
+    //canActivate: [AuthGuard]
+  },
+  {
+    path: 'sign-in',
+    loadComponent: () => import('./pages/sign-in-page/sign-in-page.component').then(m => m.SignInPageComponent),
+  },
+  {
+    path: 'sign-up',
+    loadComponent: () => import('./pages/sign-up-page/sign-up-page.component').then(m => m.SignUpPageComponent),
   },
   {
     path: '**',

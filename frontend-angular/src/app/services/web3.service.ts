@@ -3,7 +3,10 @@ import Web3 from 'web3';
 import {isAddress as isAddressValidator} from 'web3-validator';
 import {Account} from '../interfaces/account';
 import {LoadingService} from './loading.service';
-import {donationContractAbi, donationContractAddress} from '../json/abi.json';
+import {organizationContractABI, organizationContractAddress} from '../jsons/organization.address.abi';
+import {donationContractABI, donationContractAddress} from '../jsons/donation.address.abi';
+import {testContractABI, testContractAddress} from '../jsons/test.store.address.abi';
+import {SmartContract} from '../interfaces/smart.contract';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +14,7 @@ import {donationContractAbi, donationContractAddress} from '../json/abi.json';
 export class Web3Service {
 
   private web3: Web3 | null = null;
-  private contract: any = null;
-  private contractAddress: string = donationContractAddress;
-  private contractAbi = donationContractAbi;
+  private smartContracts: SmartContract[] = [];
   private accountObj: Account = {
     address: '',
     networkId: BigInt(0),
@@ -21,29 +22,53 @@ export class Web3Service {
   }
 
   constructor(private loadingService: LoadingService) {
+    //this.initializeService();
+  }
 
+  get contracts(): SmartContract[] {
+    return this.smartContracts;
   }
 
   initializeService() {
     try {
       this.web3 = new Web3((window as any).ethereum);
-      if (!this.web3) {
-        alert('Web3 is not initialized.');
-        console.error('Web3 is not initialized.');
-        return null;
-      }
-      if (!this.contractAbi) {
-        alert('Donation Contract ABI is not provided.');
-      }
-      if (!this.isAddressValid(donationContractAddress)) {
-        alert('Invalid Donation Contract Address.');
-      }
-      this.contract = new this.web3.eth.Contract(this.contractAbi, this.contractAddress);
-      return this.contract;
+
+      this.smartContracts.push({
+        name: 'Organization',
+        address: organizationContractAddress,
+        abi: organizationContractABI,
+      });
+
+      this.smartContracts.push({
+        name: 'Donation',
+        address: donationContractAddress,
+        abi: donationContractABI,
+      });
+
+      this.smartContracts.push({
+        name: 'Test',
+        address: testContractAddress,
+        abi: testContractABI,
+      });
     } catch (e) {
       alert('Web3 service could not initialized! ' + e);
       console.error('Web3 service could not initialized! ', e);
     }
+  }
+
+  createContractInstance(contractIndex: number): any {
+    if (!this.web3) {
+      console.error('Web3 is not initialized.');
+      return null;
+    }
+    if (contractIndex < 0 || contractIndex >= this.smartContracts.length) {
+      console.error('Invalid contract index.');
+      return null;
+    }
+    return new this.web3.eth.Contract(
+      this.smartContracts[contractIndex].abi,
+      this.smartContracts[contractIndex].address
+    );
   }
 
   // Check if MetaMask is installed
@@ -88,7 +113,6 @@ export class Web3Service {
     }
   }
 
-
   // Monitor Account or Network Changes
   monitorChanges(onAccountChange: (account: string | undefined) => void): void {
     if (this.isMetaMaskInstalled()) {
@@ -112,44 +136,5 @@ export class Web3Service {
   // Get Connected Account
   getConnectedAccount(): Account | null {
     return this.accountObj;
-  }
-
-  // Get Contract
-  getContract(): any {
-    return this.contract;
-  }
-
-  // Get Contract Address
-  getContractAddress(): string {
-    return this.contractAddress;
-  }
-
-  // Get Contract ABI
-  getContractAbi(): any {
-    return this.contractAbi;
-  }
-
-  // Set Contract Address
-  setContractAddress(address: string): void {
-    if (!this.isAddressValid(address)) {
-      alert('Invalid Contract Address.');
-      return;
-    }
-    this.contractAddress = address;
-  }
-
-  // Set Contract ABI
-  setContractAbi(abi: any): void {
-    if (!abi) {
-      alert('Invalid Contract ABI.');
-      return;
-    }
-    this.contractAbi = abi;
-  }
-
-  setABIandAddress(abi: any, address: string): void {
-    this.setContractAbi(abi);
-    this.setContractAddress(address);
-    this.initializeService();
   }
 }

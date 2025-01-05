@@ -1,5 +1,5 @@
-export const donationContractAddress = '0x17619eA794732aDd79D115994a09D6898eE8226A';
-export const donationContractAbi = [
+export const organizationContractAddress = '0x17619eA794732aDd79D115994a09D6898eE8226A';
+export const organizationContractABI = [
   {
     "inputs": [
       {

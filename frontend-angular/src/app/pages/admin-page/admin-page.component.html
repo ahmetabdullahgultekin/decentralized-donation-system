@@ -2,9 +2,20 @@
   <h1>Admin Dashboard</h1>
   <p>Manage the donation smart contract address and ABI.</p>
 
-  <!-- Contract Address Section -->
+  <!-- Select SmartContract Type -->
   <div class="form-group">
-    <label for="contractAddress">Contract Address:</label>
+    <label for="contractType">Select SmartContract Type:</label>
+    <select #selectElement (change)="loadContractDetails(selectElement.selectedIndex)" class="form-control"
+            id="contractType">
+      <option *ngFor="let contract of contractTypes" [value]="contract.name">
+        {{ contract.name }}
+      </option>
+    </select>
+  </div>
+
+  <!-- SmartContract Address Section -->
+  <div class="form-group">
+    <label for="contractAddress">SmartContract Address:</label>
     <input
       [(ngModel)]="updatedAddress"
       class="form-control"
@@ -14,9 +25,9 @@
     />
   </div>
 
-  <!-- Contract ABI Section -->
+  <!-- SmartContract ABI Section -->
   <div class="form-group">
-    <label for="contractAbi">Contract ABI:</label>
+    <label for="contractAbi">SmartContract ABI:</label>
     <textarea
       [(ngModel)]="updatedAbi"
       class="form-control"
@@ -31,9 +42,10 @@
     <button (click)="saveContractDetails()" class="button save">Save</button>
   </div>
 
-  <!-- Display Current Contract Details -->
+  <!-- Display Current SmartContract Details -->
   <div class="details">
-    <h3>Current Contract Details</h3>
+    <h3>Current SmartContract Details</h3>
+    <p><strong>SmartContract Type:</strong> {{ getContractName(selectedContractIndex) }}</p>
     <p><strong>Address:</strong> {{ contractAddress }}</p>
     <pre><strong>ABI:</strong> {{ contractAbi }}</pre>
   </div>

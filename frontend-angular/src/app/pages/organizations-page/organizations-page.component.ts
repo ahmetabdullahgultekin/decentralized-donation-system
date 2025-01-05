@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {Web3Service} from '../../services/web3.service';
 import {Account} from '../../interfaces/account';
+import {organizationContractAddress} from '../../jsons/organization.address.abi';
 
 @Component({
   selector: 'app-organizations-page',
@@ -41,14 +42,14 @@ export class OrganizationsPageComponent implements OnInit {
     this.errorMessage = null;
 
     try {
-      const count = await this.web3Service.getContract().methods.getOrganizationCount().call(
-        {from: this.web3Service.getContractAddress()},
+      const count = await this.web3Service.createContractInstance(0).methods.getOrganizationCount().call(
+        {from: organizationContractAddress},
       ); // Get total number of organizations
       const organizationList = [];
 
       for (let i = 0; i < count; i++) {
-        const organization = await this.web3Service.getContract().methods.getOrganization(i).call(
-          {from: this.web3Service.getContractAddress()},
+        const organization = await this.web3Service.createContractInstance(0).methods.getOrganization(i).call(
+          {from: organizationContractAddress},
         );
         organizationList.push({
           id: organization.id,

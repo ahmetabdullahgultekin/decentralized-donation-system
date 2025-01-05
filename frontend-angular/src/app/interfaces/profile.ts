@@ -1,6 +1,7 @@
 import {Badge} from './badge';
 
 export interface Profile {
+  id: number;
   name: string;
   level: string;
   reputation: number;

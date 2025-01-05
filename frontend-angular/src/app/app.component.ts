@@ -40,6 +40,7 @@ export class AppComponent {
   checkRouterEvent(e: RouterEvent) {
     // If the event is a NavigationStart event, show the spinner
     if (e instanceof NavigationStart) {
+      window.scrollTo(0, 0);
       this.loadingService.show();
     }
 

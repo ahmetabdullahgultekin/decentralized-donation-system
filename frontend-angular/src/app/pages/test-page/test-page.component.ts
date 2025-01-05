@@ -2,16 +2,23 @@ import {Component, OnInit} from '@angular/core';
 import {LoadingService} from '../../services/loading.service';
 import {Web3Service} from '../../services/web3.service';
 import {Account} from '../../interfaces/account';
+import {testContractAddress} from '../../jsons/test.store.address.abi';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-test-page',
-  imports: [],
+  imports: [
+    FormsModule
+  ],
   templateUrl: './test-page.component.html',
   styleUrl: './test-page.component.css',
 })
 export class TestPageComponent implements OnInit {
 
+  contract: any = null;
   account: Account | null = null;
+  inputValue: string = '';
+  inputAddress: string = '';
 
   storedValue: number | null = null;
 
@@ -28,24 +35,8 @@ export class TestPageComponent implements OnInit {
   // Initialize the Test Page
   async initializeTestPage() {
     try {
-      // Check MetaMask Connection
-      if (!this.web3Service.isMetaMaskConnected()) {
-        console.log('MetaMask not connected.');
-        return;
-      } else {
-        await this.web3Service.connectMetaMask();
-      }
-
+      this.contract = this.web3Service.createContractInstance(2);
       this.account = this.web3Service.getConnectedAccount();
-      /*
-            // Initialize the contract if the wallet is connected
-            if (this.userAccountObj) {
-              this.web3Service.initializeService();
-            } else {
-              console.log('MetaMask connection was canceled.');
-            }
-
-       */
     } catch (error) {
       console.error('Error initializing TestPage:', error);
     }
@@ -55,16 +46,12 @@ export class TestPageComponent implements OnInit {
   async getStoredValue() {
     this.loadingService.show();
     try {
-      if (!this.web3Service.getContract()) {
-        alert('Contract not initialized. Please connect your MetaMask wallet first.');
+      if (!this.contract) {
+        alert('SmartContract not initialized. Please connect your MetaMask wallet first.');
         return;
       }
-      if (!this.web3Service.isMetaMaskConnected()) {
-        alert('Please connect your MetaMask wallet first.');
-        return;
-      }
-      const value = await this.web3Service.getContract().methods.retrieve().call(
-        {from: this.web3Service.getContractAddress()}
+      const value = await this.contract.methods.retrieve().call(
+        {from: testContractAddress}
       );
       console.log('Retrieved Value:', value);
       this.storedValue = value;
@@ -77,28 +64,23 @@ export class TestPageComponent implements OnInit {
   }
 
   // Store a new value
-  async storeValue(inputValue: string, inputAddress: string) {
+  async storeValue() {
     this.loadingService.show();
     try {
-      let newValue = Number(inputValue);
-      if (!this.web3Service.isMetaMaskConnected()) {
-        alert('Please connect your MetaMask wallet first.');
+
+      if (!this.contract) {
+        alert('SmartContract not initialized. Please connect your MetaMask wallet first.');
         return;
       }
 
-      if (!this.web3Service.getContract()) {
-        alert('Contract not initialized. Please connect your MetaMask wallet first.');
-        return;
-      }
-
-      if (inputAddress && this.web3Service) {
+      if (this.inputAddress && this.web3Service) {
         // Call the store function
-        const result = await this.web3Service.getContract().methods.store(newValue).send({
-          from: this.account?.address,
-          to: inputAddress,
+        const result = await this.contract.methods.store(this.inputValue).send({
+          from: testContractAddress,
+          to: this.inputAddress,
         });
         console.log('Transaction Result:', result);
-        alert(`Value ${newValue} has been stored successfully!`);
+        alert(`Value ${this.inputValue} has been stored successfully!`);
       } else {
         alert('Please enter a valid contract address.');
       }
