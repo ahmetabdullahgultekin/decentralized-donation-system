@@ -2,6 +2,67 @@
   <h1>Admin Dashboard</h1>
   <p>Manage the donation smart contract address and ABI.</p>
 
+  <div class="add-organization-container">
+    <h2 class="form-title">Add Organization</h2>
+    <p class="form-description">Add a new organization to the platform by filling out the details below.</p>
+
+    <!-- Organization Name -->
+    <div class="form-group">
+      <label for="orgName">Organization Name</label>
+      <input
+        id="orgName"
+        [(ngModel)]="organization.name"
+        type="text"
+        class="form-control"
+        placeholder="Enter organization name"
+        required
+      />
+    </div>
+
+    <!-- Organization Address -->
+    <div class="form-group">
+      <label for="orgAddress">Organization Address</label>
+      <input
+        id="orgAddress"
+        [(ngModel)]="organization.address"
+        type="text"
+        class="form-control"
+        placeholder="Enter Ethereum address (0x...)"
+        required
+      />
+    </div>
+
+    <!-- Reputation Score
+    <div class="form-group">
+      <label for="orgReputation">Reputation Score</label>
+      <input
+        id="orgReputation"
+        [(ngModel)]="organization.reputation"
+        type="number"
+        class="form-control"
+        placeholder="Enter reputation score"
+        min="0"
+        required
+      />
+    </div>
+    -->
+    <!-- Organization Level -->
+    <div class="form-group">
+      <label for="orgLevel">Organization Level</label>
+      <select id="orgLevel" [(ngModel)]="organization.level" class="form-control" required>
+        <option value="Bronze">Bronze</option>
+        <option value="Silver">Silver</option>
+        <option value="Gold">Gold</option>
+      </select>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button (click)="addOrganization()" class="button">Add Organization</button>
+    </div>
+  </div>
+
+
   <!-- Select SmartContract Type -->
   <div class="form-group">
     <label for="contractType">Select SmartContract Type:</label>

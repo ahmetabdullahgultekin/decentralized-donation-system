@@ -3,7 +3,7 @@
   <p class="head-message">Below is a list of organizations you can donate to.</p>
 
   <!-- Reload Button -->
-  <div *ngIf="errorMessage || loading" class="actions">
+  <div class="actions">
     <button (click)="loadOrganizations()" [disabled]="loading" class="button reload">
       {{ loading ? 'Loading...' : 'Reload' }}
     </button>

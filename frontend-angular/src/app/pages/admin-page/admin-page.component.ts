@@ -14,7 +14,12 @@ import {SmartContract} from '../../interfaces/smart.contract';
   styleUrl: './admin-page.component.css'
 })
 export class AdminPageComponent implements OnInit {
-  // Predefined contract types (Donation, BadgeNFT, etc.)
+  // Organization Object
+  organization = {
+    name: '',
+    address: '',
+    level: 0
+  };
 
   selectedContractIndex: number = 0; // Default selected contract
   contractTypes: SmartContract[] = []; // Array to store contract
@@ -37,6 +42,35 @@ export class AdminPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadContractDetails();
+  }
+
+  addOrganization() {
+    if (
+      this.organization.name &&
+      this.organization.address &&
+      this.organization.level
+    ) {
+      this.web3Service.addOrganization(
+        this.organization.name,
+        this.organization.address,
+        this.organization.level
+      ).then(r => {
+        console.log('Organization added successfully.');
+        alert('Organization added successfully.');
+      });
+      this.resetForm();
+    } else {
+      alert('Please fill in all required fields.');
+    }
+  }
+
+  // Reset Form Function
+  resetForm() {
+    this.organization = {
+      name: '',
+      address: '',
+      level: 0
+    };
   }
 
   // Load the contract details based on the selected contract
