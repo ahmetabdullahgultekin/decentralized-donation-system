@@ -5,6 +5,8 @@ import {ActivatedRoute} from '@angular/router';
 import {Web3Service} from '../../services/web3.service';
 import {Organization} from '../../interfaces/organization';
 import {Account} from '../../interfaces/account';
+import {FormsModule} from '@angular/forms';
+import {LoadingService} from '../../services/loading.service';
 
 @Component({
   selector: 'app-details-page',
@@ -12,48 +14,54 @@ import {Account} from '../../interfaces/account';
   styleUrls: ['./details-page.component.css'],
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    FormsModule
   ]
 })
 export class DetailsPageComponent implements OnInit {
 
   web3 = new Web3();
   userAccount: Account | null = null;
-  currentPhase: number = 1; // 1: Commit, 2: Reveal
+  isCommitPhase: boolean = false; // false = phase 1, true = phase 2
   isModalVisible: boolean = false;
 
-  name: string | null = null;
+  contract: any = null;
 
+  name: string | null = null;
   organization: Organization | undefined;
 
-  userDonations = [
-    {orgName: 'Save The Ocean', status: 'Awaiting Reveal', timeRemaining: '12:30'},
-  ];
+  // Donations
+  userDonations: any[] = [];
+  // float
+  donationAmount = 0;
 
-  constructor(private route: ActivatedRoute, private web3Service: Web3Service) {
-
+  constructor(private route: ActivatedRoute, private web3Service: Web3Service, private loadingService: LoadingService) {
   }
 
   ngOnInit(): void {
     try {
+      this.loadingService.show();
       this.initializeVars();
       this.updatePhase();
       setInterval(() => this.updatePhase(), 1000); // Update phase every second
     } catch (error) {
-      console.error('Error fetching organization:', error);
+      console.error('Error initializing the page:', error);
+      this.loadingService.hide();
     }
   }
 
-  private initializeVars() {
-    this.checkRouteParams();
-    this.userAccount = this.web3Service.getConnectedAccount();
-  }
-
-  checkRouteParams() {
+  async checkRouteParams() {
+    this.loadingService.show();
     this.name = this.route.snapshot.paramMap.get('id');
-    console.log('Organization name:', this.name);
-    if (this.name) {
-      this.organization = this.web3Service.getOrganizations().find(org => org.name === this.name);
+
+    if (this.name && !this.organization) {
+      this.organization = await this.web3Service
+        .getOrganizations()
+        .then(
+          (orgs) => orgs.find((org) => org.name === this.name)
+        ).finally(() => {
+          //this.loadingService.hide();
+        });
     }
   }
 
@@ -66,26 +74,19 @@ export class DetailsPageComponent implements OnInit {
   }
 
   async connectWallet() {
-    await this.web3Service.connectMetaMask()
-    // if (typeof (window as any).ethereum !== 'undefined') {
-    //   this.web3 = new Web3((window as any).ethereum);
-    //   try {
-    //     const accounts = await (window as any).ethereum.request({
-    //       method: 'eth_requestAccounts',
-    //     });
-    //     this.userAccount = accounts[0];
-    //     alert(`Wallet connected: ${this.userAccount}`);
-    //     this.closeConnectModal();
-    //   } catch (error) {
-    //     console.error('Wallet connection error:', error);
-    //   }
-    // } else {
-    //   alert('MetaMask is not installed. Please install it to proceed.');
-    // }
+    try {
+      await this.web3Service.connectMetaMask();
+      this.userAccount = this.web3Service.getConnectedAccount();
+      alert(`Wallet connected: ${this.userAccount?.address}`);
+      this.closeConnectModal();
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+    }
   }
 
-  commitDonation(orgAddress: string | undefined) {
-    if (!this.userAccount) {
+  // Commit Donation Logic
+  async commitDonation(orgAddress: string | undefined) {
+    if (!this.userAccount?.address) {
       alert('Please connect your wallet first.');
       return;
     }
@@ -95,22 +96,37 @@ export class DetailsPageComponent implements OnInit {
       return;
     }
 
-    const randomValue = this.web3.utils.randomHex(32);
+    if (!this.donationAmount || this.donationAmount <= 0) {
+      alert('Please enter a valid donation amount.');
+      return;
+    }
+
     const commitment = this.web3.utils.soliditySha3(
-      {t: 'address', v: this.userAccount},
-      {t: 'address', v: orgAddress},
-      {t: 'bytes32', v: randomValue}
+      {t: 'address', v: this.userAccount.address},
+      {t: 'uint256', v: this.donationAmount},
     );
 
-    if (typeof commitment === "string") {
-      localStorage.setItem('commitment', commitment);
-    }
-    localStorage.setItem('randomValue', randomValue);
 
-    alert('Donation committed! Remember to reveal in phase 2.');
+    this.contract.methods.commitDonation(orgAddress, commitment).send({
+      from: this.userAccount.address,
+      value: this.donationAmount,
+    }).then((result: any) => {
+      console.log('Commitment Result:', result);
+    }).catch((error: any) => {
+      console.error('Error committing donation:', error);
+    });
+
+    if (typeof commitment === 'string') {
+      localStorage.setItem('commitment', commitment);
+      localStorage.setItem('donationAmount', this.donationAmount.toString());
+
+      alert('Donation committed! Remember to reveal in phase 2.');
+      this.addToUserDonations(this.organization?.name, 'Awaiting Reveal');
+    }
   }
 
-  revealDonation(orgAddress: string) {
+  // Reveal Donation Logic
+  async revealDonation(orgAddress: string | undefined) {
     if (!this.userAccount) {
       alert('Please connect your wallet first.');
       return;
@@ -118,22 +134,25 @@ export class DetailsPageComponent implements OnInit {
 
     const commitment = localStorage.getItem('commitment');
     const randomValue = localStorage.getItem('randomValue');
+    const donationAmount = localStorage.getItem('donationAmount');
 
-    if (!commitment || !randomValue) {
+    if (!commitment || !randomValue || !donationAmount) {
       alert('No commitment found. Please commit a donation first.');
       return;
     }
 
     // Recompute the commitment hash for validation
     const recomputedHash = this.web3.utils.soliditySha3(
-      {t: 'address', v: this.userAccount},
+      {t: 'address', v: this.userAccount.address},
       {t: 'address', v: orgAddress},
+      {t: 'uint256', v: donationAmount},
       {t: 'bytes32', v: randomValue}
     );
 
     if (recomputedHash === commitment) {
       alert('Donation successfully revealed!');
-      // Add logic for completing the reveal process (e.g., interacting with a smart contract)
+      this.updateDonationStatus(this.organization?.name, 'Revealed');
+      // Add logic to interact with the smart contract for completing the reveal process
     } else {
       alert('Invalid reveal attempt. Hash mismatch.');
     }
@@ -143,6 +162,34 @@ export class DetailsPageComponent implements OnInit {
     const phaseTime = 300; // 5 minutes per phase
     const currentTime = Math.floor(Date.now() / 1000);
     const timeInPhase = currentTime % (phaseTime * 2);
-    this.currentPhase = timeInPhase < phaseTime ? 1 : 2;
+    this.isCommitPhase = timeInPhase >= phaseTime;
+  }
+
+  private initializeVars() {
+    this.checkRouteParams().then(r => {
+      console.log('Route params checked successfully. ', r);
+    });
+    this.contract = this.web3Service.createContractInstance(3);
+    this.userAccount = this.web3Service.getConnectedAccount();
+    this.isCommitPhase = false;
+  }
+
+  // Add a donation to the user's donation list
+  private addToUserDonations(orgName: string | undefined, status: string) {
+    if (orgName) {
+      this.userDonations.push({
+        orgName,
+        status,
+        timeRemaining: !this.isCommitPhase ? '00:00' : '5:00', // Placeholder for now
+      });
+    }
+  }
+
+  // Update the status of an existing donation
+  private updateDonationStatus(orgName: string | undefined, newStatus: string) {
+    const donation = this.userDonations.find((d) => d.orgName === orgName);
+    if (donation) {
+      donation.status = newStatus;
+    }
   }
 }

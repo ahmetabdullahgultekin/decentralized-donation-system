@@ -25,8 +25,11 @@ export class NavbarComponent implements OnInit {
   }
 
   async ngOnInit() {
+    console.log('Navbar Component Initialized');
     // Check if the user is signed in
     if (this.web3Service.isMetaMaskConnected()) {
+      console.log('User is signed in');
+      console.log('Connected Account:', this.web3Service.getConnectedAccount());
       this.userAccount = this.web3Service.getConnectedAccount();
       // Optional: Fetch the user's name from the blockchain if available
       this.userName = 'Donor'; // Replace with actual logic to fetch name

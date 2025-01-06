@@ -2,32 +2,59 @@
   <header class="header">
     <h1>DonateChain</h1>
     <nav class="nav">
-      <button (click)="connectWallet()" class="button">Connect Wallet</button>
-      <div class="badge badge-gold">
-        Your Level: {{ organization?.level }}
+      <!-- Connect Wallet Button -->
+      <button (click)="connectWallet()" class="button" *ngIf="!userAccount?.address">
+        {{ userAccount?.address ? 'Connected' : 'Connect Wallet' }}
+      </button>
+      <div *ngIf="userAccount" class="badge badge-gold">
+        Connected Account: {{ userAccount.address || 'No account connected' }}
       </div>
     </nav>
   </header>
 
+  <!-- Phase Indicator -->
   <div class="phase-indicator">
-    <div [class.active]="currentPhase === 1" class="phase-dot"></div>
+    <div [class.active]="!isCommitPhase" class="phase-dot"></div>
     <span>Phase 1: Commit</span>
-    <div [class.active]="currentPhase === 2" class="phase-dot"></div>
+    <div [class.active]="isCommitPhase" class="phase-dot"></div>
     <span>Phase 2: Reveal</span>
   </div>
 
   <main class="main">
     <!-- Organizations Section -->
     <section class="card">
-      <h2>{{organization?.name}}</h2>
+      <h2>Organization Details</h2>
       <div id="orgs-list">
-        <div class="org-item">
-          <div [class]="'badge badge-' + organization?.level">
-            {{ organization?.level }} Organization
+        <div *ngIf="organization" class="org-item">
+          <div [class]="'badge badge-' + organization.level">
+            {{ organization.level }} Organization
           </div>
-          <p>Reputation Score: {{ organization?.reputation }}</p>
-          <button (click)="commitDonation(organization?.address)" class="button">Commit Donation</button>
+          <p><strong>Name:</strong> {{ organization.name }}</p>
+          <p><strong>Reputation Score:</strong> {{ organization.reputation }}</p>
+          <p><strong>Address:</strong> {{ organization.address }}</p>
+
+          <!-- Enter Donation Amount -->
+          <div class="form-group">
+            <label for="donationAmount">Enter Donation Amount (ETH):</label>
+            <input
+              [(ngModel)]="donationAmount"
+              class="form-control"
+              id="donationAmount"
+              placeholder="Enter amount"
+              type="number"
+            />
+          </div>
+
+          <!-- Commit Button -->
+          <button
+            (click)="commitDonation(organization.address)"
+            [disabled]="!donationAmount || donationAmount <= 0 || isCommitPhase"
+            class="button commit-button"
+          >
+            Commit Donation
+          </button>
         </div>
+        <p *ngIf="!organization">No organization details found.</p>
       </div>
     </section>
 
@@ -36,10 +63,24 @@
       <h2>Your Donations</h2>
       <div id="donations-list">
         <div *ngFor="let donation of userDonations" class="donation-item">
-          <p>Committed to: {{ donation.orgName }}</p>
-          <p>Status: {{ donation.status }}</p>
-          <p *ngIf="donation.timeRemaining">Time Remaining: {{ donation.timeRemaining }}</p>
+          <p><strong>Committed to:</strong> {{ donation.orgName }}</p>
+          <p><strong>Status:</strong> {{ donation.status }}</p>
+          <p *ngIf="donation.timeRemaining">
+            <strong>Time Remaining:</strong> {{ donation.timeRemaining }}
+          </p>
+
+          <!-- Reveal Button -->
+          <button
+            (click)="revealDonation(organization?.address)"
+            *ngIf="isCommitPhase && donation.status === 'Awaiting Reveal'"
+            class="button reveal-button"
+          >
+            Reveal Donation
+          </button>
         </div>
+        <p *ngIf="userDonations.length === 0">
+          No donations committed yet. Start by committing a donation in Phase 1.
+        </p>
       </div>
     </aside>
   </main>

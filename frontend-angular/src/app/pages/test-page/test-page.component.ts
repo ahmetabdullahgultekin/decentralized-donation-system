@@ -4,6 +4,7 @@ import {Web3Service} from '../../services/web3.service';
 import {Account} from '../../interfaces/account';
 import {testContractAddress} from '../../jsons/test.store.address.abi';
 import {FormsModule} from '@angular/forms';
+import Web3 from 'web3';
 
 @Component({
   selector: 'app-test-page',
@@ -67,6 +68,17 @@ export class TestPageComponent implements OnInit {
   async storeValue() {
     this.loadingService.show();
     try {
+
+      const web3 = new Web3();
+      const commitment = web3.utils.soliditySha3(
+        {t: 'uint256', v: this.inputValue},
+        {t: 'address', v: this.inputAddress},
+      );
+
+      alert(`Commitment: ${commitment}`);
+      if (commitment) {
+        return;
+      }
 
       if (!this.contract) {
         alert('SmartContract not initialized. Please connect your MetaMask wallet first.');

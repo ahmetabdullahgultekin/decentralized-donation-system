@@ -66,6 +66,7 @@ export class Web3Service {
   }
 
   async fetchOrganizations() {
+    this.loadingService.show();
     try {
       const count = await this.createContractInstance(0).methods.getOrganizationCount().call(
         {from: organizationContractAddress},
@@ -89,6 +90,8 @@ export class Web3Service {
     } catch (error) {
       alert('Error fetching organizations: ' + error);
       console.error('Error fetching organizations:', error);
+    } finally {
+      this.loadingService.hide();
     }
   }
 
@@ -191,7 +194,13 @@ export class Web3Service {
     return this.accountObj;
   }
 
-  getOrganizations(): Organization[] {
+  async getOrganizations(): Promise<Organization[]> {
+    // if organizations are not fetched yet await for them
+    if (this.organizations.length === 0) {
+      await this.fetchOrganizations().then(r => {
+        console.log('Organizations fetched successfully.');
+      });
+    }
     return this.organizations;
   }
 }

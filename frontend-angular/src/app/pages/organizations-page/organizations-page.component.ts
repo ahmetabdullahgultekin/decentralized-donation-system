@@ -32,7 +32,7 @@ export class OrganizationsPageComponent implements OnInit {
       this.userAccount = this.web3Service.getConnectedAccount();
 
       // Fetch organizations
-      this.organizations = this.web3Service.getOrganizations();
+      this.organizations = await this.web3Service.getOrganizations();
 
     } catch (error) {
       console.error('Error fetching organizations:', error);
@@ -42,8 +42,8 @@ export class OrganizationsPageComponent implements OnInit {
     }
   }
 
-  loadOrganizations() {
-    this.organizations = this.web3Service.getOrganizations();
+  async loadOrganizations() {
+    this.organizations = await this.web3Service.getOrganizations();
   }
 
   /*
