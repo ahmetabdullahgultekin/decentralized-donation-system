@@ -33,7 +33,7 @@ export class DetailsPageComponent implements OnInit {
   // Donations
   userDonations: any[] = [];
   // float
-  donationAmount = 0;
+  donationAmount = 0.0;
 
   constructor(private route: ActivatedRoute, private web3Service: Web3Service, private loadingService: LoadingService) {
   }
@@ -106,10 +106,9 @@ export class DetailsPageComponent implements OnInit {
       {t: 'uint256', v: this.donationAmount},
     );
 
-
     this.contract.methods.commitDonation(orgAddress, commitment).send({
       from: this.userAccount.address,
-      value: this.donationAmount,
+      value: this.web3.utils.fromWei(this.donationAmount.toString(), 'ether')
     }).then((result: any) => {
       console.log('Commitment Result:', result);
     }).catch((error: any) => {
@@ -169,7 +168,7 @@ export class DetailsPageComponent implements OnInit {
     this.checkRouteParams().then(r => {
       console.log('Route params checked successfully. ', r);
     });
-    this.contract = this.web3Service.createContractInstance(3);
+    this.contract = this.web3Service.createContractInstance(1);
     this.userAccount = this.web3Service.getConnectedAccount();
     this.isCommitPhase = false;
   }

@@ -48,7 +48,7 @@
           <!-- Commit Button -->
           <button
             (click)="commitDonation(organization.address)"
-            [disabled]="!donationAmount || donationAmount <= 0 || isCommitPhase"
+            [disabled]="!donationAmount || donationAmount <= 0 || !isCommitPhase"
             class="button commit-button"
           >
             Commit Donation
