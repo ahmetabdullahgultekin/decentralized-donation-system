@@ -42,8 +42,8 @@ export class DetailsPageComponent implements OnInit {
     try {
       this.loadingService.show();
       this.initializeVars();
-      this.updatePhase();
-      setInterval(() => this.updatePhase(), 1000); // Update phase every second
+      //this.updatePhase();
+      //setInterval(() => this.updatePhase(), 1000); // Update phase every second
     } catch (error) {
       console.error('Error initializing the page:', error);
       this.loadingService.hide();
@@ -168,7 +168,7 @@ export class DetailsPageComponent implements OnInit {
     this.checkRouteParams().then(r => {
       console.log('Route params checked successfully. ', r);
     });
-    this.contract = this.web3Service.createContractInstance(1);
+    this.contract = this.web3Service.createContractInstance(3);
     this.userAccount = this.web3Service.getConnectedAccount();
     this.isCommitPhase = false;
   }

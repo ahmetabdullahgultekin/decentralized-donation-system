@@ -1,4 +1,4 @@
-export const donationContractAddress = '0xd9145CCE52D386f254917e481eB44e9943F39138';
+export const donationContractAddress = '0xe0641b7aDbCA9e5476c0ce34b7A4835bba3373B6';
 export const donationContractABI = [
   {
     "inputs": [],
@@ -297,26 +297,16 @@ export const donationContractABI = [
     "type": "event"
   },
   {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
+    "inputs": [],
+    "name": "admin",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "_wallet",
+        "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "_level",
-        "type": "uint8"
       }
     ],
-    "name": "addOrganization",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -449,6 +439,25 @@ export const donationContractABI = [
         "type": "address"
       }
     ],
+    "name": "donorIds",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
     "name": "donors",
     "outputs": [
       {
@@ -549,6 +558,19 @@ export const donationContractABI = [
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "getDonorCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -586,34 +608,13 @@ export const donationContractABI = [
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "organizations",
+    "inputs": [],
+    "name": "organizationManager",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "wallet",
+        "internalType": "contract OrganizationManager",
+        "name": "",
         "type": "address"
-      },
-      {
-        "internalType": "uint8",
-        "name": "level",
-        "type": "uint8"
       }
     ],
     "stateMutability": "view",

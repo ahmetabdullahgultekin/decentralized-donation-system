@@ -1,6 +1,6 @@
 <div class="container">
   <h1>Organizations</h1>
-  <p>Below is a list of organizations you can donate to.</p>
+  <p class="head-message">Below is a list of organizations you can donate to.</p>
 
   <!-- Reload Button -->
   <div *ngIf="errorMessage || loading" class="actions">
@@ -22,7 +22,7 @@
   </div>
 
   <!-- No Organizations Message -->
-  <p *ngIf="!loading && organizations.length === 0 && !errorMessage">
+  <p *ngIf="!loading && organizations.length === 0 && !errorMessage" class="head-message">
     No organizations found. Please check back later.
   </p>
 </div>

@@ -8,6 +8,7 @@ import {donationContractABI, donationContractAddress} from '../jsons/donation.ad
 import {testContractABI, testContractAddress} from '../jsons/test.store.address.abi';
 import {SmartContract} from '../interfaces/smart.contract';
 import {Organization} from '../interfaces/organization';
+import {systemContractABI, systemContractAddress} from '../jsons/system.address.abi';
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +64,26 @@ export class Web3Service {
       address: testContractAddress,
       abi: testContractABI,
     });
+    this.smartContracts.push({
+      name: 'System',
+      address: systemContractAddress,
+      abi: systemContractABI,
+    });
+
+  }
+
+  async addOrganization(name: string, wallet: string, level: number) {
+    this.loadingService.show();
+    try {
+      await this.createContractInstance(0).methods.addOrganization(name, wallet, level).send(
+        {from: this.accountObj.address},
+      );
+    } catch (error) {
+      alert('Error adding organization: ' + error);
+      console.error('Error adding organization:', error);
+    } finally {
+      this.loadingService.hide();
+    }
   }
 
   async fetchOrganizations() {
@@ -71,24 +92,22 @@ export class Web3Service {
       const count = await this.createContractInstance(0).methods.getOrganizationCount().call(
         {from: organizationContractAddress},
       ); // Get total number of organizations
-      this.organizations = [];
+      let organizations = [];
 
       for (let i = 0; i < count; i++) {
         const organization = await this.createContractInstance(0).methods.getOrganization(i).call(
           {from: organizationContractAddress},
         );
-        this.organizations.push({
+        organizations.push({
+          id: organization.id,
           name: organization.name,
-          description: organization.description,
           address: organization.wallet,
-          donationGoal: organization.donationGoal,
-          donationProgress: organization.donationProgress,
           level: this.getLevelName(organization.level),
-          reputation: organization.reputation,
         });
       }
+      this.organizations = organizations;
     } catch (error) {
-      alert('Error fetching organizations: ' + error);
+      //alert('Error fetching organizations: ' + error);
       console.error('Error fetching organizations:', error);
     } finally {
       this.loadingService.hide();

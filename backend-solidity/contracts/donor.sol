@@ -35,6 +35,7 @@ contract DonationSystem is ERC721 {
     Organization[] public organizations; // Beneficiaries
     Donor[] private donorList; // List of donors (for iteration if needed)
     mapping(address => Donation[]) public donations; //
+    mapping(address => bool) public isOrganization; // Check if an address is an organization
     mapping(address => Organization) private organizationDetails; // Organization details mapped by wallet
     mapping(address => Donor) public donors; // Donor details mapped by wallet
     mapping(address => bool) internal isRegistered; // Check if a donor is already registered
@@ -80,6 +81,7 @@ contract DonationSystem is ERC721 {
         isRegistered[sender] = true;
     }
 
+/*
     function addOrganization(string memory _name, address _wallet, uint8 _level) external onlyOwner {
         require( organizationDetails[_wallet].wallet != _wallet , "Organization already registered");
 
@@ -94,6 +96,38 @@ contract DonationSystem is ERC721 {
        
 
         emit OrganizationAdded(organizations.length - 1, _name, _wallet);
+    }
+*/
+    // Add a new organization
+    function addOrganization(
+        string memory _name,
+        address _wallet,
+        uint8 _level
+    ) public {
+        require(!isOrganization[_wallet], "Organization already exists");
+        uint256 id = organizations.length;
+        organizations.push(Organization(id, _name, _wallet, _level));
+        isOrganization[_wallet] = true;
+    }
+
+    // Get the total number of organizations
+    function getOrganizationCount() public view returns (uint256) {
+        return organizations.length;
+    }
+
+    // Fetch an organization by index
+    function getOrganization(uint256 index)
+        public
+        view
+        returns (
+            uint256 id,
+            string memory name,
+            address wallet,
+            uint8 level
+        )
+    {
+        Organization memory org = organizations[index];
+        return (org.id, org.name, org.wallet, org.level);
     }
 
     function donate(bytes32 hash, address organization) external onlyRegistered {

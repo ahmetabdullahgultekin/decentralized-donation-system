@@ -30,7 +30,7 @@
             {{ organization.level }} Organization
           </div>
           <p><strong>Name:</strong> {{ organization.name }}</p>
-          <p><strong>Reputation Score:</strong> {{ organization.reputation }}</p>
+          <p><strong>Reputation Score:</strong> {{ organization.level }}</p>
           <p><strong>Address:</strong> {{ organization.address }}</p>
 
           <!-- Enter Donation Amount -->
@@ -48,7 +48,7 @@
           <!-- Commit Button -->
           <button
             (click)="commitDonation(organization.address)"
-            [disabled]="!donationAmount || donationAmount <= 0 || !isCommitPhase"
+            [disabled]="!donationAmount || donationAmount <= 0 || isCommitPhase"
             class="button commit-button"
           >
             Commit Donation

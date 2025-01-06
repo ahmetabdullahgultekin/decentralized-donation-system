@@ -1,9 +1,6 @@
 export interface Organization {
+  id: number
   name: string;
-  description: string;
   address: string;
-  donationGoal: number;
-  donationProgress: number;
   level: string;
-  reputation: number;
 }
