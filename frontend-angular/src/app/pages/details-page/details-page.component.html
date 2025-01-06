@@ -4,7 +4,7 @@
     <nav class="nav">
       <button (click)="connectWallet()" class="button">Connect Wallet</button>
       <div class="badge badge-gold">
-        Your Level: Gold
+        Your Level: {{ organization?.level }}
       </div>
     </nav>
   </header>
@@ -19,15 +19,14 @@
   <main class="main">
     <!-- Organizations Section -->
     <section class="card">
-      <h2>Available Organizations</h2>
+      <h2>{{organization?.name}}</h2>
       <div id="orgs-list">
-        <div *ngFor="let org of organizations" class="org-item">
-          <h3>{{ org.name }}</h3>
-          <div [class]="'badge badge-' + org.level.toLowerCase()">
-            {{ org.level }} Organization
+        <div class="org-item">
+          <div [class]="'badge badge-' + organization?.level">
+            {{ organization?.level }} Organization
           </div>
-          <p>Reputation Score: {{ org.reputation }}</p>
-          <button (click)="commitDonation(org.address)" class="button">Commit Donation</button>
+          <p>Reputation Score: {{ organization?.reputation }}</p>
+          <button (click)="commitDonation(organization?.address)" class="button">Commit Donation</button>
         </div>
       </div>
     </section>

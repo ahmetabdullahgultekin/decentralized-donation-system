@@ -36,9 +36,10 @@ h1 {
 }
 
 .organizations-list {
-  display: flex;
+  display: block;
   flex-wrap: wrap;
   gap: 20px;
+  margin-top: 20px;
 }
 
 .organization-card {

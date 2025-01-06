@@ -13,10 +13,22 @@
   text-decoration: none;
 }
 
+.navbar .logo {
+  display: inline;
+}
+
+.navbar .user-actions {
+  display: inline;
+}
+
 .nav-links {
   list-style: none;
-  display: flex;
-  gap: 15px;
+  display: inline;
+}
+
+.nav-links li {
+  display: inline-block;
+  margin-right: 20px;
 }
 
 .nav-links a {

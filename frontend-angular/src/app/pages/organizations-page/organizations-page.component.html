@@ -13,11 +13,11 @@
   <!-- Organizations List -->
   <div *ngIf="!loading && organizations.length > 0" class="organizations-list">
     <div *ngFor="let org of organizations" class="organization-card">
-      <h2>{{ org.name }}</h2>
+      <h2>{{ org.name.toLocaleUpperCase() }}</h2>
       <p><strong>Wallet Address:</strong> {{ org.wallet }}</p>
       <p><strong>Reputation:</strong> {{ org.reputation }}</p>
       <p><strong>Level:</strong> {{ org.level }}</p>
-      <button [disabled]="true" class="button donate">Donate</button>
+      <button class="button donate" routerLink="/organizations/{{ org.name }}/donate">Donate</button>
     </div>
   </div>
 

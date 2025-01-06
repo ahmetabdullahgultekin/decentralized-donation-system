@@ -2,13 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from '@angular/common';
 import {Web3Service} from '../../services/web3.service';
 import {Account} from '../../interfaces/account';
-import {organizationContractAddress} from '../../jsons/organization.address.abi';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-organizations-page',
   imports: [
     NgForOf,
-    NgIf
+    NgIf,
+    RouterLink
   ],
   templateUrl: './organizations-page.component.html',
   styleUrl: './organizations-page.component.css'
@@ -18,25 +19,34 @@ export class OrganizationsPageComponent implements OnInit {
   web3: any;
   userAccount: Account | null = null;
   errorMessage: string | null = null;
-  loading: boolean = false;
+  loading = false;
 
-  constructor(private web3Service: Web3Service) {
+  constructor(private web3Service: Web3Service, private router: Router) {
   }
 
   async ngOnInit() {
     try {
+      this.loading = true;
+      this.errorMessage = null;
+
       this.userAccount = this.web3Service.getConnectedAccount();
 
-      if (this.userAccount) {
-        // Fetch organizations
-        await this.loadOrganizations();
-      }
+      // Fetch organizations
+      this.organizations = this.web3Service.getOrganizations();
+
     } catch (error) {
-      alert('Error initializing organizations page. Please try again.' + error);
-      console.error('Error initializing organizations page:', error);
+      console.error('Error fetching organizations:', error);
+      this.errorMessage = 'Failed to load organizations. Please try again.';
+    } finally {
+      this.loading = false;
     }
   }
 
+  loadOrganizations() {
+    this.organizations = this.web3Service.getOrganizations();
+  }
+
+  /*
   async loadOrganizations() {
     this.loading = true;
     this.errorMessage = null;
@@ -61,6 +71,7 @@ export class OrganizationsPageComponent implements OnInit {
       }
 
       this.organizations = organizationList;
+      this.web3Service.organizations = organizationList;
     } catch (error) {
       console.error('Error fetching organizations:', error);
       this.errorMessage = 'Failed to load organizations. Please try again.';
@@ -69,20 +80,5 @@ export class OrganizationsPageComponent implements OnInit {
     }
   }
 
-  getLevelName(level: number): string {
-    switch (Number(level)) {
-      case Number(0):
-        return 'Bronze';
-      case Number(1):
-        return 'Silver';
-      case Number(2):
-        return 'Gold';
-      case Number(3):
-        return 'Platinum';
-      case Number(4):
-        return 'Diamond';
-      default:
-        return 'Unknown';
-    }
-  }
+   */
 }

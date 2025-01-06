@@ -3,7 +3,6 @@ import {FormsModule} from '@angular/forms';
 import {Web3Service} from '../../services/web3.service';
 import {NgForOf} from '@angular/common';
 import {SmartContract} from '../../interfaces/smart.contract';
-import {organizationContractABI} from '../../jsons/organization.address.abi';
 
 @Component({
   selector: 'app-admin-page',

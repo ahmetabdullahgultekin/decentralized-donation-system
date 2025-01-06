@@ -8,11 +8,11 @@ export const routes: Routes = [
     //loadComponent: () => import('./pages/main-page/main-page.component').then(m => m.MainPageComponent)
   },
   {
-    path: 'donate',
+    path: 'details',
     loadComponent: () => import('./pages/donate-page/donate-page.component').then(m => m.DonatePageComponent)
   },
   {
-    path: 'details',
+    path: 'donate',
     loadComponent: () => import('./pages/details-page/details-page.component').then(m => m.DetailsPageComponent)
   },
   {
@@ -26,6 +26,14 @@ export const routes: Routes = [
   {
     path: 'organizations',
     loadComponent: () => import('./pages/organizations-page/organizations-page.component').then(m => m.OrganizationsPageComponent)
+  },
+  {
+    path: 'organizations/:id',
+    loadComponent: () => import('./pages/details-page/details-page.component').then(m => m.DetailsPageComponent)
+  },
+  {
+    path: 'organizations/:id/donate',
+    loadComponent: () => import('./pages/details-page/details-page.component').then(m => m.DetailsPageComponent)
   },
   {
     path: 'profile',

@@ -7,6 +7,7 @@ import {organizationContractABI, organizationContractAddress} from '../jsons/org
 import {donationContractABI, donationContractAddress} from '../jsons/donation.address.abi';
 import {testContractABI, testContractAddress} from '../jsons/test.store.address.abi';
 import {SmartContract} from '../interfaces/smart.contract';
+import {Organization} from '../interfaces/organization';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class Web3Service {
 
   private web3: Web3 | null = null;
   private smartContracts: SmartContract[] = [];
+  private organizations: Organization[] = [];
   private accountObj: Account = {
     address: '',
     networkId: BigInt(0),
@@ -33,26 +35,77 @@ export class Web3Service {
     try {
       this.web3 = new Web3((window as any).ethereum);
 
-      this.smartContracts.push({
-        name: 'Organization',
-        address: organizationContractAddress,
-        abi: organizationContractABI,
+      this.initializeContracts();
+
+      this.fetchOrganizations().then(r => {
+        console.log('Organizations fetched successfully.');
       });
 
-      this.smartContracts.push({
-        name: 'Donation',
-        address: donationContractAddress,
-        abi: donationContractABI,
-      });
-
-      this.smartContracts.push({
-        name: 'Test',
-        address: testContractAddress,
-        abi: testContractABI,
-      });
     } catch (e) {
       alert('Web3 service could not initialized! ' + e);
       console.error('Web3 service could not initialized! ', e);
+    }
+  }
+
+  initializeContracts() {
+    this.smartContracts.push({
+      name: 'Organization',
+      address: organizationContractAddress,
+      abi: organizationContractABI,
+    });
+    this.smartContracts.push({
+      name: 'Donation',
+      address: donationContractAddress,
+      abi: donationContractABI,
+    });
+    this.smartContracts.push({
+      name: 'TestStore',
+      address: testContractAddress,
+      abi: testContractABI,
+    });
+  }
+
+  async fetchOrganizations() {
+    try {
+      const count = await this.createContractInstance(0).methods.getOrganizationCount().call(
+        {from: organizationContractAddress},
+      ); // Get total number of organizations
+      this.organizations = [];
+
+      for (let i = 0; i < count; i++) {
+        const organization = await this.createContractInstance(0).methods.getOrganization(i).call(
+          {from: organizationContractAddress},
+        );
+        this.organizations.push({
+          name: organization.name,
+          description: organization.description,
+          address: organization.wallet,
+          donationGoal: organization.donationGoal,
+          donationProgress: organization.donationProgress,
+          level: this.getLevelName(organization.level),
+          reputation: organization.reputation,
+        });
+      }
+    } catch (error) {
+      alert('Error fetching organizations: ' + error);
+      console.error('Error fetching organizations:', error);
+    }
+  }
+
+  getLevelName(level: number): string {
+    switch (Number(level)) {
+      case Number(0):
+        return 'Bronze';
+      case Number(1):
+        return 'Silver';
+      case Number(2):
+        return 'Gold';
+      case Number(3):
+        return 'Platinum';
+      case Number(4):
+        return 'Diamond';
+      default:
+        return 'Unknown';
     }
   }
 
@@ -136,5 +189,9 @@ export class Web3Service {
   // Get Connected Account
   getConnectedAccount(): Account | null {
     return this.accountObj;
+  }
+
+  getOrganizations(): Organization[] {
+    return this.organizations;
   }
 }

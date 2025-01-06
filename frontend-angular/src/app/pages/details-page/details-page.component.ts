@@ -1,6 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import Web3 from 'web3';
 import {NgForOf, NgIf} from '@angular/common';
+import {ActivatedRoute} from '@angular/router';
+import {Web3Service} from '../../services/web3.service';
+import {Organization} from '../../interfaces/organization';
+import {Account} from '../../interfaces/account';
 
 @Component({
   selector: 'app-details-page',
@@ -12,26 +16,45 @@ import {NgForOf, NgIf} from '@angular/common';
   ]
 })
 export class DetailsPageComponent implements OnInit {
-  web3: any;
-  userAccount: string | null = null;
+
+  web3 = new Web3();
+  userAccount: Account | null = null;
   currentPhase: number = 1; // 1: Commit, 2: Reveal
   isModalVisible: boolean = false;
 
-  organizations = [
-    {name: 'Save The Ocean', level: 'Silver', reputation: 780, address: '0x123...'},
-    {name: 'Green Earth Fund', level: 'Gold', reputation: 920, address: '0x456...'},
-  ];
+  name: string | null = null;
+
+  organization: Organization | undefined;
 
   userDonations = [
     {orgName: 'Save The Ocean', status: 'Awaiting Reveal', timeRemaining: '12:30'},
   ];
 
-  constructor() {
+  constructor(private route: ActivatedRoute, private web3Service: Web3Service) {
+
   }
 
   ngOnInit(): void {
-    this.updatePhase();
-    setInterval(() => this.updatePhase(), 1000); // Update phase every second
+    try {
+      this.initializeVars();
+      this.updatePhase();
+      setInterval(() => this.updatePhase(), 1000); // Update phase every second
+    } catch (error) {
+      console.error('Error fetching organization:', error);
+    }
+  }
+
+  private initializeVars() {
+    this.checkRouteParams();
+    this.userAccount = this.web3Service.getConnectedAccount();
+  }
+
+  checkRouteParams() {
+    this.name = this.route.snapshot.paramMap.get('id');
+    console.log('Organization name:', this.name);
+    if (this.name) {
+      this.organization = this.web3Service.getOrganizations().find(org => org.name === this.name);
+    }
   }
 
   openConnectModal() {
@@ -43,26 +66,32 @@ export class DetailsPageComponent implements OnInit {
   }
 
   async connectWallet() {
-    if (typeof (window as any).ethereum !== 'undefined') {
-      this.web3 = new Web3((window as any).ethereum);
-      try {
-        const accounts = await (window as any).ethereum.request({
-          method: 'eth_requestAccounts',
-        });
-        this.userAccount = accounts[0];
-        alert(`Wallet connected: ${this.userAccount}`);
-        this.closeConnectModal();
-      } catch (error) {
-        console.error('Wallet connection error:', error);
-      }
-    } else {
-      alert('MetaMask is not installed. Please install it to proceed.');
-    }
+    await this.web3Service.connectMetaMask()
+    // if (typeof (window as any).ethereum !== 'undefined') {
+    //   this.web3 = new Web3((window as any).ethereum);
+    //   try {
+    //     const accounts = await (window as any).ethereum.request({
+    //       method: 'eth_requestAccounts',
+    //     });
+    //     this.userAccount = accounts[0];
+    //     alert(`Wallet connected: ${this.userAccount}`);
+    //     this.closeConnectModal();
+    //   } catch (error) {
+    //     console.error('Wallet connection error:', error);
+    //   }
+    // } else {
+    //   alert('MetaMask is not installed. Please install it to proceed.');
+    // }
   }
 
-  commitDonation(orgAddress: string) {
+  commitDonation(orgAddress: string | undefined) {
     if (!this.userAccount) {
       alert('Please connect your wallet first.');
+      return;
+    }
+
+    if (!orgAddress) {
+      alert('Organization address not found.');
       return;
     }
 
@@ -73,7 +102,9 @@ export class DetailsPageComponent implements OnInit {
       {t: 'bytes32', v: randomValue}
     );
 
-    localStorage.setItem('commitment', commitment);
+    if (typeof commitment === "string") {
+      localStorage.setItem('commitment', commitment);
+    }
     localStorage.setItem('randomValue', randomValue);
 
     alert('Donation committed! Remember to reveal in phase 2.');
