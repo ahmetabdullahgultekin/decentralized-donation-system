@@ -44,6 +44,7 @@ export class OrganizationsPageComponent implements OnInit {
 
   async loadOrganizations() {
     this.organizations = await this.web3Service.getOrganizations();
+    window.location.reload();
   }
 
   /*

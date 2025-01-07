@@ -50,6 +50,22 @@ export class DetailsPageComponent implements OnInit {
     }
   }
 
+  updatePhase() {
+    const phaseTime = 300; // 5 minutes per phase
+    const currentTime = Math.floor(Date.now() / 1000);
+    const timeInPhase = currentTime % (phaseTime * 2);
+    this.isCommitPhase = timeInPhase >= phaseTime;
+  }
+
+  private initializeVars() {
+    this.checkRouteParams().then(r => {
+      console.log('Route params checked successfully. ', r);
+    });
+    this.contract = this.web3Service.createContractInstance(1);
+    this.userAccount = this.web3Service.getConnectedAccount();
+    this.isCommitPhase = false;
+  }
+
   async checkRouteParams() {
     this.loadingService.show();
     this.name = this.route.snapshot.paramMap.get('id');
@@ -101,23 +117,25 @@ export class DetailsPageComponent implements OnInit {
       return;
     }
 
+    const randomValue = this.web3.utils.randomBytes(32); // Generate a random 32-byte value
+    const donationAmountWei = this.web3.utils.toWei(this.donationAmount.toString(), 'ether'); // Convert to Wei
+
     const commitment = this.web3.utils.soliditySha3(
-      {t: 'address', v: this.userAccount.address},
-      {t: 'uint256', v: this.donationAmount},
+      { t: 'address', v: this.userAccount.address },
+      { t: 'uint256', v: donationAmountWei }
     );
 
-    this.contract.methods.commitDonation(orgAddress, commitment).send({
-      from: this.userAccount.address,
-      value: this.web3.utils.fromWei(this.donationAmount.toString(), 'ether')
-    }).then((result: any) => {
-      console.log('Commitment Result:', result);
-    }).catch((error: any) => {
-      console.error('Error committing donation:', error);
-    });
+    this.contract.methods.donate(commitment, orgAddress).send(
+      {
+        from: this.userAccount.address,
+        value: donationAmountWei,
+        gas: 3000000
+      }
+    );
 
     if (typeof commitment === 'string') {
       localStorage.setItem('commitment', commitment);
-      localStorage.setItem('donationAmount', this.donationAmount.toString());
+      localStorage.setItem('donationAmount', donationAmountWei);
 
       alert('Donation committed! Remember to reveal in phase 2.');
       this.addToUserDonations(this.organization?.name, 'Awaiting Reveal');
@@ -132,8 +150,8 @@ export class DetailsPageComponent implements OnInit {
     }
 
     const commitment = localStorage.getItem('commitment');
-    const randomValue = localStorage.getItem('randomValue');
     const donationAmount = localStorage.getItem('donationAmount');
+    const randomValue = this.web3.utils.randomBytes(32);
 
     if (!commitment || !randomValue || !donationAmount) {
       alert('No commitment found. Please commit a donation first.');
@@ -142,11 +160,17 @@ export class DetailsPageComponent implements OnInit {
 
     // Recompute the commitment hash for validation
     const recomputedHash = this.web3.utils.soliditySha3(
-      {t: 'address', v: this.userAccount.address},
-      {t: 'address', v: orgAddress},
-      {t: 'uint256', v: donationAmount},
-      {t: 'bytes32', v: randomValue}
+      { t: 'address', v: this.userAccount.address },
+      { t: 'uint256', v: donationAmount }
     );
+
+    this.contract.methods.reveal(orgAddress, randomValue).send({
+      from: this.userAccount.address
+    }).then((result: any) => {
+      console.log('Reveal Result:', result);
+    }).catch((error: any) => {
+      console.error('Error revealing donation:', error);
+    });
 
     if (recomputedHash === commitment) {
       alert('Donation successfully revealed!');
@@ -157,21 +181,7 @@ export class DetailsPageComponent implements OnInit {
     }
   }
 
-  updatePhase() {
-    const phaseTime = 300; // 5 minutes per phase
-    const currentTime = Math.floor(Date.now() / 1000);
-    const timeInPhase = currentTime % (phaseTime * 2);
-    this.isCommitPhase = timeInPhase >= phaseTime;
-  }
 
-  private initializeVars() {
-    this.checkRouteParams().then(r => {
-      console.log('Route params checked successfully. ', r);
-    });
-    this.contract = this.web3Service.createContractInstance(3);
-    this.userAccount = this.web3Service.getConnectedAccount();
-    this.isCommitPhase = false;
-  }
 
   // Add a donation to the user's donation list
   private addToUserDonations(orgName: string | undefined, status: string) {
