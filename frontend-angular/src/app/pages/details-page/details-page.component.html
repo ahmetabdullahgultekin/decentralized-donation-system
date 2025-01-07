@@ -3,7 +3,7 @@
     <h1>DonateChain</h1>
     <nav class="nav">
       <!-- Connect Wallet Button -->
-      <button (click)="connectWallet()" class="button" *ngIf="!userAccount?.address">
+      <button (click)="connectWallet()" *ngIf="!userAccount?.address" class="button">
         {{ userAccount?.address ? 'Connected' : 'Connect Wallet' }}
       </button>
       <div *ngIf="userAccount" class="badge badge-gold">

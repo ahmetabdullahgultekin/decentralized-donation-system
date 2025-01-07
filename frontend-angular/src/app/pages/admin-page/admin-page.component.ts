@@ -1,14 +1,12 @@
 import {Component, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Web3Service} from '../../services/web3.service';
-import {NgForOf} from '@angular/common';
 import {SmartContract} from '../../interfaces/smart.contract';
 
 @Component({
   selector: 'app-admin-page',
   imports: [
     FormsModule,
-    NgForOf
   ],
   templateUrl: './admin-page.component.html',
   styleUrl: './admin-page.component.css'
@@ -29,6 +27,11 @@ export class AdminPageComponent implements OnInit {
   // Stored current details (replace these with fetched values from a database or API)
   contractAddress: string = '0x123456789abcdef'; // Example address
   contractAbi: string = '[{ "type": "function", "name": "example" }]'; // Example ABI
+
+  donorAddress: string = '';
+  //donations: Organization = [];
+  selectedDonationId: number | null = null;
+
 
   constructor(private web3Service: Web3Service) {
     this.contractTypes = this.web3Service.contracts.map((contract) => {
@@ -100,5 +103,43 @@ export class AdminPageComponent implements OnInit {
   // Get the display name of the selected contract
   getContractName(key: number): string {
     return this.contractTypes[key].name;
+  }
+
+  /*
+  // Fetch donations for a specific donor
+  async fetchDonorDonations() {
+    if (!this.donorAddress) {
+      alert('Please enter a donor address.');
+      return;
+    }
+
+    try {
+      this.donations = await this.web3Service.getDonations(this.donorAddress);
+      if (this.donations.length === 0) {
+        alert('No donations found for this donor.');
+      }
+    } catch (error) {
+      console.error('Error fetching donations:', error);
+      alert('Failed to fetch donations. Check the console for details.');
+    }
+  }
+
+   */
+
+  // Apply penalty for a specific donation
+  async applyPenalty() {
+    if (this.selectedDonationId === null) {
+      alert('Please enter a donation ID.');
+      return;
+    }
+
+    try {
+      const tx = await this.web3Service.applyPenalty(this.donorAddress, this.selectedDonationId);
+      alert('Penalty applied successfully! TX: ' + tx.transactionHash);
+      //await this.fetchDonorDonations(); // Refresh the donation list
+    } catch (error) {
+      console.error('Error applying penalty:', error);
+      alert('Failed to apply penalty. Check the console for details.');
+    }
   }
 }

@@ -3,7 +3,6 @@ import {NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {Web3Service} from '../../services/web3.service';
 import Web3 from 'web3';
-import {donationContractABI, donationContractAddress} from '../../jsons/donation.address.abi';
 import {Account} from '../../interfaces/account';
 
 @Component({
@@ -21,7 +20,7 @@ export class SignUpPageComponent {
   userAccount: Account | null = null;
 
   donorName: string = '';
-  donorLevel: number | null = null; // 0: Bronze, 1: Silver, etc.
+  donorAddress: string | null = null; // 0: Bronze, 1: Silver, etc.
   errorMessage: string | null = null;
 
   constructor(private web3Service: Web3Service) {
@@ -31,19 +30,19 @@ export class SignUpPageComponent {
     this.userAccount = await this.web3Service.connectMetaMask();
     if (this.userAccount) {
       this.web3 = new Web3((window as any).ethereum);
-      this.contract = new this.web3.eth.Contract(donationContractABI, donationContractAddress);
+      this.contract = this.web3Service.createContractInstance(3)
     }
   }
 
   async signUp() {
-    if (!this.donorName || this.donorLevel === null) {
+    if (!this.donorName || this.donorAddress === null) {
       this.errorMessage = 'Please fill in all fields';
       return;
     }
 
     try {
-      await this.contract.methods.signUp(this.donorName, this.donorLevel).send({
-        from: this.userAccount,
+      await this.contract.methods.signUp(this.donorName, this.donorAddress).send({
+        from: this.userAccount?.address,
       });
       alert('Sign up successful! Welcome to DonateChain!');
     } catch (error) {

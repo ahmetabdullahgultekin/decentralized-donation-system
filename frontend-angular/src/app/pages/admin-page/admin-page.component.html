@@ -10,12 +10,12 @@
     <div class="form-group">
       <label for="orgName">Organization Name</label>
       <input
-        id="orgName"
         [(ngModel)]="organization.name"
-        type="text"
         class="form-control"
+        id="orgName"
         placeholder="Enter organization name"
         required
+        type="text"
       />
     </div>
 
@@ -23,12 +23,12 @@
     <div class="form-group">
       <label for="orgAddress">Organization Address</label>
       <input
-        id="orgAddress"
         [(ngModel)]="organization.address"
-        type="text"
         class="form-control"
+        id="orgAddress"
         placeholder="Enter Ethereum address (0x...)"
         required
+        type="text"
       />
     </div>
 
@@ -46,10 +46,58 @@
       />
     </div>
     -->
+
+    <!-- Donor Address Input
+    <div class="donor-input">
+      <label for="donorAddress">Enter Donor Address:</label>
+      <input
+        type="text"
+        id="donorAddress"
+        [(ngModel)]="donorAddress"
+        placeholder="0x123..."
+      />
+      <label for="donorAddress">Enter Donation ID:</label>
+      <input
+        type="text"
+        id="donorId"
+        [(ngModel)]="donationId"
+        placeholder="0x123..."
+      />
+      -->
+    <!-- Fetch Donor Donations Button
+    <button (click)="fetchDonorDonations()">View Donations</button>
+  </div>
+    -->
+
+
+    <!-- Donor's Donations
+    <div *ngIf="donations.length > 0" class="donation-list">
+      <h3>Donations by {{ donorAddress }}</h3>
+      <table>
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Amount</th>
+          <th>Reveal Due Date</th>
+          <th>Revealed</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let donation of donations">
+          <td>{{ donation.id }}</td>
+          <td>{{ donation.amount }}</td>
+          <td>{{ donation.revealDueDate | date }}</td>
+          <td>{{ donation.revealed ? 'Yes' : 'No' }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    -->
+
     <!-- Organization Level -->
     <div class="form-group">
       <label for="orgLevel">Organization Level</label>
-      <select id="orgLevel" [(ngModel)]="organization.level" class="form-control" required>
+      <select [(ngModel)]="organization.level" class="form-control" id="orgLevel" required>
         <option value="Bronze">Bronze</option>
         <option value="Silver">Silver</option>
         <option value="Gold">Gold</option>
@@ -59,6 +107,31 @@
     <!-- Submit Button -->
     <div class="form-actions">
       <button (click)="addOrganization()" class="button">Add Organization</button>
+    </div>
+
+    <h2>Donor Penalty Management</h2>
+
+
+    <!-- Apply Penalty -->
+    <div class="form-group">
+      <h4>Apply Penalty</h4>
+      <label for="donationId">Enter Donation ID:</label>
+      <input
+        [(ngModel)]="selectedDonationId"
+        class="form-control"
+        id="donationId"
+        placeholder="Enter Donation ID"
+        type="number"
+      />
+      <label for="donorAddress">Enter Donor Address:</label>
+      <input
+        [(ngModel)]="donorAddress"
+        class="form-control"
+        id="donorAddress"
+        placeholder="0x123..."
+        type="text"
+      />
+      <button (click)="applyPenalty()" class="button">Apply Penalty</button>
     </div>
   </div>
 

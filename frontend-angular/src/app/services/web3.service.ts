@@ -222,4 +222,30 @@ export class Web3Service {
     }
     return this.organizations;
   }
+
+  // Fetch donations for a donor
+  async getDonations(donorAddress: string): Promise<Organization> {
+    try {
+      return await this.createContractInstance(1).donations(donorAddress).call(
+        {from: donationContractAddress},
+      );
+    } catch (error) {
+      console.error('Error fetching donations:', error);
+      throw error;
+    }
+  }
+
+  // Apply penalty for a specific donation
+  async applyPenalty(donorAddress: string, donationId: number): Promise<any> {
+    try {
+      const tx = await this.createContractInstance(1).methods.applyPenalty(donorAddress, donationId).send(
+        {from: this.accountObj.address},
+      );  // Apply penalty
+      return tx.wait();
+    } catch (error) {
+      console.error('Error applying penalty:', error);
+      throw error;
+    }
+  }
+
 }

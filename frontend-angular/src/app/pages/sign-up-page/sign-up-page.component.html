@@ -13,16 +13,8 @@
       type="text"
     />
 
-    <label for="donorLevel">Choose Your Level:</label>
-    <select [(ngModel)]="donorLevel" id="donorLevel" name="donorLevel" required>
-      <option value="0">Bronze</option>
-      <option value="1">Silver</option>
-      <option value="2">Gold</option>
-      <option value="3">Platinum</option>
-      <option value="4">Diamond</option>
-      <option value="5">Master</option>
-      <option value="6">Legend</option>
-    </select>
+    <label for="donorLevel">Enter Donor Address:</label>
+    <input [(ngModel)]="donorAddress" id="donorLevel" name="donorLevel">
 
     <button class="button" type="submit">Sign Up</button>
   </form>

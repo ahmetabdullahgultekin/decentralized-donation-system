@@ -60,6 +60,7 @@
 
 .profile-dropdown .dropdown-menu {
   position: absolute;
+  width: max-content;
   top: 100%;
   right: 0;
   background: white;

@@ -57,15 +57,6 @@ export class DetailsPageComponent implements OnInit {
     this.isCommitPhase = timeInPhase >= phaseTime;
   }
 
-  private initializeVars() {
-    this.checkRouteParams().then(r => {
-      console.log('Route params checked successfully. ', r);
-    });
-    this.contract = this.web3Service.createContractInstance(1);
-    this.userAccount = this.web3Service.getConnectedAccount();
-    this.isCommitPhase = false;
-  }
-
   async checkRouteParams() {
     this.loadingService.show();
     this.name = this.route.snapshot.paramMap.get('id');
@@ -123,8 +114,8 @@ export class DetailsPageComponent implements OnInit {
     console.log('Donation Amount (Wei):', donationAmountWei);
     console.log('User Address:', this.userAccount.address);
     const commitment = this.web3.utils.soliditySha3(
-      { t: 'address', v: this.userAccount.address },
-      { t: 'uint256', v: donationAmountWei }
+      {t: 'address', v: this.userAccount.address},
+      {t: 'uint256', v: donationAmountWei}
     );
     console.log('Commitment:', commitment);
 
@@ -161,8 +152,8 @@ export class DetailsPageComponent implements OnInit {
 
     // Recompute the commitment hash for validation
     const recomputedHash = this.web3.utils.soliditySha3(
-      { t: 'address', v: this.userAccount.address },
-      { t: 'uint256', v: donationAmount }
+      {t: 'address', v: this.userAccount.address},
+      {t: 'uint256', v: donationAmount}
     );
 
     this.contract.methods.reveal(orgAddress, randomValue).send({
@@ -182,7 +173,14 @@ export class DetailsPageComponent implements OnInit {
     }
   }
 
-
+  private initializeVars() {
+    this.checkRouteParams().then(r => {
+      console.log('Route params checked successfully. ', r);
+    });
+    this.contract = this.web3Service.createContractInstance(1);
+    this.userAccount = this.web3Service.getConnectedAccount();
+    this.isCommitPhase = false;
+  }
 
   // Add a donation to the user's donation list
   private addToUserDonations(orgName: string | undefined, status: string) {

@@ -72,6 +72,7 @@ h1 {
   border-radius: 4px;
   overflow-x: auto;
 }
+
 /* Container Styles */
 .add-organization-container {
   max-width: 600px;
@@ -139,3 +140,31 @@ h1 {
   background: #0056b3;
 }
 
+.admin-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.donor-input {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+th, td {
+  padding: 8px;
+  text-align: left;
+}
+
+.apply-penalty {
+  margin-top: 20px;
+}
