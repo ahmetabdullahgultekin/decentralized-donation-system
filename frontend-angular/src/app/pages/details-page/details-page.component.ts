@@ -120,16 +120,17 @@ export class DetailsPageComponent implements OnInit {
     const randomValue = this.web3.utils.randomBytes(32); // Generate a random 32-byte value
     const donationAmountWei = this.web3.utils.toWei(this.donationAmount.toString(), 'ether'); // Convert to Wei
 
+    console.log('Donation Amount (Wei):', donationAmountWei);
+    console.log('User Address:', this.userAccount.address);
     const commitment = this.web3.utils.soliditySha3(
       { t: 'address', v: this.userAccount.address },
       { t: 'uint256', v: donationAmountWei }
     );
+    console.log('Commitment:', commitment);
 
     this.contract.methods.donate(commitment, orgAddress).send(
       {
         from: this.userAccount.address,
-        value: donationAmountWei,
-        gas: 3000000
       }
     );
 
