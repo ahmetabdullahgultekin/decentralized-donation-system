@@ -72,12 +72,13 @@ export class TestPageComponent implements OnInit {
       console.log('Input Address:', this.inputAddress);
       console.log('Input Value:', this.inputValue);
       const web3 = new Web3();
-      const commitment = web3.utils.soliditySha3(
-        {t: 'address', v: this.inputAddress},
-        {t: 'uint256', v: this.inputValue},
+      const commitment = web3.utils.keccak256(
+        web3.utils.encodePacked(
+          this.inputValue,
+          this.inputAddress
+        )
       );
 
-      alert(`Commitment: ${commitment}`);
       if (commitment) {
         return;
       }

@@ -113,25 +113,30 @@ export class DetailsPageComponent implements OnInit {
 
     console.log('Donation Amount (Wei):', donationAmountWei);
     console.log('User Address:', this.userAccount.address);
-    const commitment = this.web3.utils.soliditySha3(
-      {t: 'address', v: this.userAccount.address},
-      {t: 'uint256', v: donationAmountWei}
+    const commitment = this.web3.utils.keccak256(
+      this.web3.utils.encodePacked(
+        donationAmountWei,
+        this.userAccount.address
+      )
     );
+
     console.log('Commitment:', commitment);
 
-    this.contract.methods.donate(commitment, orgAddress).send(
+    await this.contract.methods.donate(commitment, orgAddress).send(
       {
         from: this.userAccount.address,
       }
-    );
+    ).then((result: any) => {
+      alert('Donation committed! Remember to reveal in phase 2. Transaction hash: ' + result.transactionHash);
+      console.log('Donation Result:', result);
+    }).catch((error: any) => {
+      alert('Error committing donation: ' + error.message);
+      console.error('Error donating:', error);
+    });
 
-    if (typeof commitment === 'string') {
-      localStorage.setItem('commitment', commitment);
-      localStorage.setItem('donationAmount', donationAmountWei);
-
-      alert('Donation committed! Remember to reveal in phase 2.');
-      this.addToUserDonations(this.organization?.name, 'Awaiting Reveal');
-    }
+    localStorage.setItem('commitment', commitment);
+    localStorage.setItem('donationAmount', donationAmountWei);
+    this.addToUserDonations(this.organization?.name, 'Awaiting Reveal');
   }
 
   // Reveal Donation Logic
@@ -143,20 +148,22 @@ export class DetailsPageComponent implements OnInit {
 
     const commitment = localStorage.getItem('commitment');
     const donationAmount = localStorage.getItem('donationAmount');
-    const randomValue = this.web3.utils.randomBytes(32);
 
-    if (!commitment || !randomValue || !donationAmount) {
+    if (!commitment || !donationAmount) {
       alert('No commitment found. Please commit a donation first.');
       return;
     }
 
     // Recompute the commitment hash for validation
-    const recomputedHash = this.web3.utils.soliditySha3(
-      {t: 'address', v: this.userAccount.address},
-      {t: 'uint256', v: donationAmount}
+    const recomputedHash = this.web3.utils.keccak256(
+      this.web3.utils.encodePacked(
+        donationAmount,
+        this.userAccount.address
+      )
     );
 
-    this.contract.methods.reveal(orgAddress, randomValue).send({
+
+    this.contract.methods.revealDonation(0, this.donationAmount).send({
       from: this.userAccount.address
     }).then((result: any) => {
       console.log('Reveal Result:', result);
